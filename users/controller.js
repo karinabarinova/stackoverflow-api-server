@@ -7,6 +7,7 @@ const userService = require('./service')
 
 //routes
 router.get('/', authorize(), getAll);
+router.post('/', authorize(), createSchema, create);
 router.get('/:id', authorize(), getById);
 router.patch('/:id', authorize(), updateSchema, update);
 router.delete('/:id', authorize(), _delete);
@@ -37,6 +38,36 @@ function update(req, res, next) {
     userService.update(req.params.id, req.body)
         .then(user => res.json(user))
         .catch(next)
+}
+
+function createSchema(req, res, next) {
+    const schema = Joi.object({
+        login: Joi.string().empty(''),
+        email: Joi.string().email(),
+        role: Joi.string().valid('user', 'admin'),
+        fullName: Joi.string().regex(/^[A-Z]+ [A-Z]+$/i).uppercase(),
+        password: Joi.string().min(7).empty(''),
+        repeat_password: Joi.any().equal(Joi.ref('password'))
+            .required()
+            .label('Confirm password')
+            .options({ messages: { 'any.only': '{{#label}} does not match'} })
+    })
+    validateRequest(req, next, schema)
+}
+
+function create(req, res, next) {
+    try {
+        if (req.user.role === 'admin') {
+            userService.create(req.body)
+            .then(() => res.json({ message: "User Creation successful"}))
+            .catch(next)
+        } else {
+            res.status(401).json({message: "Unauthorized"})
+        }
+    } catch(e) {
+        res.status(500).json() //?
+    }
+    
 }
 
 function _delete(req, res, next) {

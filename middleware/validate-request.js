@@ -11,9 +11,6 @@ function validateRequest(req, next, schema) {
     if (error) {
         next(`Validation error: ${error.details.map(x => x.message).join(', ')}`);
     } else {    
-        // value.email = req.body.email
-        // value.rating = req.body.rating
-
         req.body = value;
         next();
     }

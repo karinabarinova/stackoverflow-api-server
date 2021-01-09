@@ -10,7 +10,7 @@ const userService = require('../users/service')
 //routes
 router.post('/login', authenticateSchema, authenticate);
 router.post('/register', registerSchema, register);
-router.post('/logout', authorize(), logOut);
+// router.post('/logout', authorize(), logOut);
 // router.post('/password-reset', passwordReset)
 // router.post('/password-reset/:confirm_token')
 
