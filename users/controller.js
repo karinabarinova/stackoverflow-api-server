@@ -3,6 +3,7 @@ const router = express.Router()
 const Joi = require('joi')
 const validateRequest = require('../middleware/validate-request')
 const authorize = require('../middleware/authorize')
+const isAdmin = require('../middleware/isAdmin')
 const userService = require('./service')
 
 //routes
@@ -57,7 +58,7 @@ function createSchema(req, res, next) {
 
 function create(req, res, next) {
     try {
-        if (req.user.role === 'admin') {
+        if (isAdmin(req.user)) {
             userService.create(req.body)
             .then(() => res.json({ message: "User Creation successful"}))
             .catch(next)
