@@ -6,10 +6,7 @@ const authorize = require('../middleware/authorize')
 const userService = require('./service')
 
 //routes
-// router.post('/login', authenticateSchema, authenticate);
-// router.post('/register', registerSchema, register);
 router.get('/', authorize(), getAll);
-router.get('/current', authorize(), getCurrent);
 router.get('/:id', authorize(), getById);
 router.patch('/:id', authorize(), updateSchema, update);
 router.delete('/:id', authorize(), _delete);
@@ -20,10 +17,6 @@ function getAll(req, res, next) {
     userService.getAll()
         .then(users => res.json(users))
         .catch(next);
-}
-
-function getCurrent(req, res, next) {
-    res.json(req.user)
 }
 
 function getById(req, res, next) {

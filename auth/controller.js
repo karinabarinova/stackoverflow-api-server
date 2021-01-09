@@ -10,7 +10,7 @@ const userService = require('../users/service')
 //routes
 router.post('/login', authenticateSchema, authenticate);
 router.post('/register', registerSchema, register);
-// router.post('/logout', authorize(), logOut);
+router.post('/logout', authorize(), logOut);
 // router.post('/password-reset', passwordReset)
 // router.post('/password-reset/:confirm_token')
 
@@ -50,3 +50,8 @@ function register(req, res, next) {
         .then(() => res.json({ message: "Registration successful"}))
         .catch(next)
 }
+
+// function logOut(req, res, next) {
+//     // console.log(req.cookie)
+//     console.log(req.user.token)
+// }
