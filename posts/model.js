@@ -1,4 +1,5 @@
 const { DataTypes, Sequelize } = require('sequelize');
+const User = require('../users/model')
 
 module.exports = model;
 
@@ -11,7 +12,7 @@ function model(sequelize) {
             allowNull: false
         },
         author: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             allowNull: false
         },
         title: {
@@ -39,7 +40,7 @@ function model(sequelize) {
                 return this.getDataValue('categories').split(';')
             },
             set(value) {
-                return this.setDataValue('categories', value.join(';'))
+                return this.setDataValue('categories', value)
             }
         }
     }

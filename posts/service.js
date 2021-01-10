@@ -5,7 +5,8 @@ const db = require('../helpers/db');
 
 module.exports = {
     getAll,
-    getById
+    getById,
+    create
 };
 
 async function getAll() {
@@ -16,23 +17,17 @@ async function getById(id) {
     return await getPost(id);
 }
 
-// async function create(params) {
-//     // validate
-//     if (await db.Post.findOne({ where: { login: params.login } })) {
-//         throw 'Login ' + params.login + ' is already taken';
-//     }
+async function create(params) {
+    console.log("Create")
+    console.log(params)
+    // validate
+    // if (await db.Post.findOne({ where: { title: params.title } })) {
+    //     throw 'Login ' + params.login + ' is already taken';
+    // }
 
-//     if(await db.User.findOne({ where: { email: params.email } }))
-//         throw 'Email ' + params.email + ' is already used by another user';
-
-//     // hash password
-//     if (params.password) {
-//         params.hash = await bcrypt.hash(params.password, 10);
-//     }
-
-//     // save user
-//     await db.User.create(params);
-// }
+    // save user
+    await db.Post.create(params);
+}
 
 // async function update(id, params) {
 //     const user = await getUser(id);

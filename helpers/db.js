@@ -16,7 +16,9 @@ async function initialize() {
     const sequelize = new Sequelize(database, user, password, {dialect: 'mysql'})
     db.User = require('../users/model')(sequelize)
     db.Post = require('../posts/model')(sequelize)
-
+    //relations
+    db.User.hasMany(db.Post, { as: "Posts", foreignKey: "author"})
+    db.Post.belongsTo(db.User, { as: "User", foreignKey: "author"})
     //sync all models with database
     await sequelize.sync()
 }
