@@ -6,7 +6,8 @@ const db = require('../helpers/db');
 module.exports = {
     getAll,
     getById,
-    create
+    create,
+    update
 };
 
 async function getAll() {
@@ -18,37 +19,30 @@ async function getById(id) {
 }
 
 async function create(params) {
-    console.log("Create")
-    console.log(params)
-    // validate
-    // if (await db.Post.findOne({ where: { title: params.title } })) {
-    //     throw 'Login ' + params.login + ' is already taken';
-    // }
-
-    // save user
     await db.Post.create(params);
 }
 
-// async function update(id, params) {
-//     const user = await getUser(id);
+async function update(id, params) {
+    const post = await getPost(id);
 
-//     // validate
-//     const usernameChanged = params.username && user.username !== params.username;
-//     if (usernameChanged && await db.User.findOne({ where: { username: params.username } })) {
-//         throw 'Username "' + params.username + '" is already taken';
-//     }
+    // // validate
+    // const usernameChanged = params.username && user.username !== params.username;
+    // if (usernameChanged && await db.User.findOne({ where: { username: params.username } })) {
+    //     throw 'Username "' + params.username + '" is already taken';
+    // }
 
-//     // hash password if it was entered
-//     if (params.password) {
-//         params.hash = await bcrypt.hash(params.password, 10);
-//     }
+    // // hash password if it was entered
+    // if (params.password) {
+    //     params.hash = await bcrypt.hash(params.password, 10);
+    // }
 
-//     // copy params to user and save
-//     Object.assign(user, params);
-//     await user.save();
+    // copy params to user and save
+    Object.assign(post, params);
+    await post.save();
 
-//     return omitHashAndPassword(user.get());
-// }
+    // return omitHashAndPassword(user.get());
+    return post.get()
+}
 
 // async function _delete(id) {
 //     const user = await getUser(id);

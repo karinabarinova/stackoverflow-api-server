@@ -11,6 +11,7 @@ const postService = require('./service')
 router.get('/', getAll) //public TO DO: Add pagination
 router.get('/:id', getById) //public
 router.post('/', authorize(), createSchema, create)
+router.patch('/:id', authorize(), updateSchema, update)
 // router.get('/', authorize(), getAll);
 // router.post('/', authorize(), createSchema, create);
 // router.get('/:id', authorize(), getById);
@@ -45,5 +46,20 @@ function createSchema(req, res, next) {
 function create(req, res, next) {
     postService.create(req.body)
         .then(() => res.json({ message: "Post Creation successful"}))
+        .catch(next)
+}
+
+function updateSchema(req, res, next) {
+    const schema = Joi.object({
+        title: Joi.string(),
+        content: Joi.string(),
+        categories: Joi.string()
+    })
+    validateRequest(req, next, schema)
+}
+
+function update(req, res, next) {
+    postService.update(req.params.id, req.body)
+        .then(post => res.json(post))
         .catch(next)
 }
