@@ -15,6 +15,7 @@ async function initialize() {
     //connect to db
     const sequelize = new Sequelize(database, user, password, {dialect: 'mysql'})
     db.User = require('../users/model')(sequelize)
+    db.Post = require('../posts/model')(sequelize)
 
     //sync all models with database
     await sequelize.sync()

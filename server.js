@@ -12,6 +12,7 @@ app.use(cors())
 //api routes for user, posts, etc
 app.use('/api/users', require('./users/controller'))
 app.use('/api/auth', require('./auth/controller'))
+app.use('/api/posts', require('./posts/controller'))
 //global error handler
 app.use(errorHandler)
 //start server
