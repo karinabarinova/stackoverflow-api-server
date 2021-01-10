@@ -13,11 +13,6 @@ router.get('/:id', getById) //public
 router.post('/', authorize(), createSchema, create)
 router.patch('/:id', authorize(), updateSchema, update)
 router.delete('/:id', authorize(), _delete)
-// router.get('/', authorize(), getAll);
-// router.post('/', authorize(), createSchema, create);
-// router.get('/:id', authorize(), getById);
-// router.patch('/:id', authorize(), updateSchema, update);
-// router.delete('/:id', authorize(), _delete);
 
 module.exports = router
 

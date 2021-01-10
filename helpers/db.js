@@ -15,10 +15,15 @@ async function initialize() {
     //connect to db
     const sequelize = new Sequelize(database, user, password, {dialect: 'mysql'})
     db.User = require('../users/model')(sequelize)
+    db.RefreshToken = require('../users/refresh-token.model')(sequelize)
     db.Post = require('../posts/model')(sequelize)
-    //relations
+
+    //define relations
+    db.User.hasMany(db.RefreshToken, {onDelete: 'CASCADE'})
+    db.RefreshToken.belongsTo(db.User)
     db.User.hasMany(db.Post, { as: "Posts", foreignKey: "author"})
     db.Post.belongsTo(db.User, { as: "User", foreignKey: "author"})
+    
     //sync all models with database
     await sequelize.sync()
 }

@@ -3,11 +3,15 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const errorHandler = require('./middleware/error-handler')
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
-app.use(cors())
+app.use(cookieParser());
+
+app.use(cors({ origin: (origin, callback) => callback(null, true), credentials: true }));
+
 
 //api routes for user, posts, etc
 app.use('/api/users', require('./users/controller'))

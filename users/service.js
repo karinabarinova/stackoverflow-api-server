@@ -1,7 +1,11 @@
 const config = require('../config.json')
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto')
+const { Op } = require('sequelize')
+const sendEmail = require('../helpers/send-email')
 const db = require('../helpers/db');
+const Role = require('../helpers/role')
 
 module.exports = {
     getAll,
@@ -12,11 +16,13 @@ module.exports = {
 };
 
 async function getAll() {
-    return await db.User.findAll();
+    const users = await db.User.findAll();
+    return users.map(x => basicDetails(x))
 }
 
 async function getById(id) {
-    return await getUser(id);
+    const user = await getUser(id);
+    return basicDetails(user)
 }
 
 async function create(params) {
@@ -27,14 +33,12 @@ async function create(params) {
 
     if(await db.User.findOne({ where: { email: params.email } }))
         throw 'Email ' + params.email + ' is already used by another user';
-
+    const user = new db.User(params)
+    user.verified = Date.now()
     // hash password
-    if (params.password) {
-        params.hash = await bcrypt.hash(params.password, 10);
-    }
-
-    // save user
-    await db.User.create(params);
+    user.hash = await hash(params.password)
+    await user.save()
+    return basicDetails(user)
 }
 
 async function update(id, params) {
@@ -46,16 +50,21 @@ async function update(id, params) {
         throw 'Username "' + params.username + '" is already taken';
     }
 
+    if (params.email && user.email !== params.email && await db.User.findOne({ where: { email: params.email } })) {
+        throw 'Email "' + params.email + '" is already taken';
+    }
+
     // hash password if it was entered
     if (params.password) {
-        params.hash = await bcrypt.hash(params.password, 10);
+        params.passwordHash = await hash(params.password);
     }
 
     // copy params to user and save
     Object.assign(user, params);
+    user.updated = Date.now()
     await user.save();
 
-    return omitHashAndPassword(user.get());
+    return basicDetails(user);
 }
 
 async function _delete(id) {
@@ -71,7 +80,11 @@ async function getUser(id) {
     return user;
 }
 
-function omitHashAndPassword(user) {
-    const { hash, password, ...userWithoutHash } = user;
-    return userWithoutHash;
+async function hash(password) {
+    return await bcrypt.hash(password, 10);
+}
+
+function basicDetails(user) {
+    const { id, login, email, role, created, updated, isVerified } = user;
+    return { id, login, email, role, created, updated, isVerified };
 }
