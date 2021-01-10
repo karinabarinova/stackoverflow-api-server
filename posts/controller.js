@@ -4,7 +4,7 @@ const Joi = require('joi')
 const validateRequest = require('../middleware/validate-request')
 const authorize = require('../middleware/authorize')
 const isAdmin = require('../middleware/isAdmin')
-const userService = require('./service')
+// const userService = require('./service')
 const postService = require('./service')
 
 //routes
@@ -12,6 +12,7 @@ router.get('/', getAll) //public TO DO: Add pagination
 router.get('/:id', getById) //public
 router.post('/', authorize(), createSchema, create)
 router.patch('/:id', authorize(), updateSchema, update)
+router.delete('/:id', authorize(), _delete)
 // router.get('/', authorize(), getAll);
 // router.post('/', authorize(), createSchema, create);
 // router.get('/:id', authorize(), getById);
@@ -61,5 +62,11 @@ function updateSchema(req, res, next) {
 function update(req, res, next) {
     postService.update(req.params.id, req.body)
         .then(post => res.json(post))
+        .catch(next)
+}
+
+function _delete(req, res, next) {
+    postService.delete(req.params.id)
+        .then(() => res.json({message: 'Post deleted successfully'}))
         .catch(next)
 }
