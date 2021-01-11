@@ -5,21 +5,19 @@ const validateRequest = require('../middleware/validate-request')
 const authorize = require('../middleware/authorize')//for logout
 const authService = require('./service')
 const Role = require('../helpers/role')
-// const userService = require('../users/service')
-
 
 //routes
-// router.post('/authenticate', authenticateSchema, authenticate);
 router.post('/refresh-token', refreshToken);
 router.post('/revoke-token', authorize(), revokeTokenSchema, revokeToken);
 // router.post('/register', registerSchema, register);
-router.post('/password-reset', forgotPasswordSchema, forgotPassword);
 router.post('/validate-reset-token', validateResetTokenSchema, validateResetToken);
-router.post('/reset-password', resetPasswordSchema, resetPassword);
+router.post('/reset-password/:confirm_token', resetPasswordSchema, resetPassword);
 //
 router.post('/login', authenticateSchema, authenticate);
 router.post('/register', registerSchema, register);
 router.post('/verify-email', verifyEmailSchema, verifyEmail);
+router.post('/password-reset', forgotPasswordSchema, forgotPassword);
+
 
 // router.post('/logout', authorize(), logOut);
 // router.post('/password-reset', passwordReset)
@@ -144,7 +142,6 @@ function validateResetToken(req, res, next) {
 
 function resetPasswordSchema(req, res, next) {
     const schema = Joi.object({
-        token: Joi.string().required(),
         password: Joi.string().min(6).required(),
         confirmPassword: Joi.string().valid(Joi.ref('password')).required()
     });
@@ -152,7 +149,7 @@ function resetPasswordSchema(req, res, next) {
 }
 
 function resetPassword(req, res, next) {
-    authService.resetPassword(req.body)
+    authService.resetPassword(req.body, req.params.confirm_token)
         .then(() => res.json({ message: 'Password reset successful, you can now login' }))
         .catch(next);
 }
