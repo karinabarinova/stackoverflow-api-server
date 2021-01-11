@@ -20,7 +20,7 @@ module.exports = {
 };
 
 async function authenticate({ login, email, password, ipAddress }) {
-    const user = await db.User.scope('withHash').findOne({ where: { email } });
+    const user = await db.User.scope('withHash').findOne({ where: { email, login } });
 
     if (!user || !user.isVerified || !(await bcrypt.compare(password, user.hash))) {
         throw 'Email or password is incorrect';
@@ -66,10 +66,13 @@ async function refreshToken({ token, ipAddress }) {
 
 async function revokeToken({ token, ipAddress }) {
     const refreshToken = await getRefreshToken(token);
-
+    console.log('Before')
+    console.log(refreshToken)
     // revoke token and save
     refreshToken.revoked = Date.now();
     refreshToken.revokedByIp = ipAddress;
+    console.log("After revoke")
+    console.log(refreshToken)
     await refreshToken.save();
 }
 
@@ -191,9 +194,7 @@ async function sendVerificationEmail(user, origin) {
 }
 
 async function sendAlreadyRegisteredEmail(email, origin) {
-    console.log("Already")
-    console.log(email)
-    console.log(origin)
+
     let message;
     if (origin) {
         message = `<p>If you don't know your password please visit the <a href="${origin}/api/auth/password-reset">forgot password</a> page.</p>`;

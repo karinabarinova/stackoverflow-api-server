@@ -3,7 +3,6 @@ const router = express.Router()
 const Joi = require('joi')
 const validateRequest = require('../middleware/validate-request')
 const authorize = require('../middleware/authorize')
-// const isAdmin = require('../middleware/isAdmin')
 const Role = require('../helpers/role')
 const userService = require('./service')
 
@@ -28,22 +27,24 @@ function getById(req, res, next) {
         return res.status(401).json({ message: "Unauthorized" })
 
     userService.getById(req.params.id)
-        .then(user => user ? req.json(user) : res.sendStatus(404))
+        .then(user => user ? res.json(user) : res.sendStatus(404))
         .catch(next)
 }
 
 function updateSchema(req, res, next) {
-    const schemaRules = Joi.object({
+    const schemaRules = {
         email: Joi.string().email().empty(''),
         login: Joi.string().empty(''),
         password: Joi.string().min(7).empty(''),
+        fullName: Joi.string().empty(),
         repeat_password: Joi.any().equal(Joi.ref('password'))
-            .required()
             .label('Confirm password')
-            .options({ messages: { 'any.only': '{{#label}} does not match'} }),
-    })
-    if (req.user.role === Role.Admin)
+            .options({ messages: { 'any.only': '{{#label}} does not match'} })
+    }
+    if (req.user.role === Role.Admin) {
         schemaRules.role = Joi.string().valid(Role.Admin, Role.User).empty('')
+        schemaRules.rating = Joi.number()
+    }
     
     const schema = Joi.object(schemaRules).with('password', 'repeat_password'); //!
     validateRequest(req, next, schema)
@@ -63,7 +64,6 @@ function createSchema(req, res, next) {
     const schema = Joi.object({
         login: Joi.string().empty(''),
         email: Joi.string().email(),
-        // role: Joi.string().valid('user', 'admin'),
         fullName: Joi.string().regex(/^[A-Z]+ [A-Z]+$/i).uppercase(),
         password: Joi.string().min(7).empty(''),
         repeat_password: Joi.any().equal(Joi.ref('password'))
@@ -78,7 +78,7 @@ function createSchema(req, res, next) {
 function create(req, res, next) {
 
     userService.create(req.body)
-        .then(() => res.json(user))
+        .then((user) => res.json(user))
         .catch(next)
     
 }

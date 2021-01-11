@@ -9,14 +9,14 @@ const Role = require('../helpers/role')
 //routes
 router.post('/refresh-token', refreshToken);
 router.post('/revoke-token', authorize(), revokeTokenSchema, revokeToken);
-// router.post('/register', registerSchema, register);
 router.post('/validate-reset-token', validateResetTokenSchema, validateResetToken);
-router.post('/reset-password/:confirm_token', resetPasswordSchema, resetPassword);
 //
 router.post('/login', authenticateSchema, authenticate);
 router.post('/register', registerSchema, register);
 router.post('/verify-email', verifyEmailSchema, verifyEmail);
 router.post('/password-reset', forgotPasswordSchema, forgotPassword);
+router.post('/reset-password/:confirm_token', resetPasswordSchema, resetPassword);
+
 
 
 // router.post('/logout', authorize(), logOut);
