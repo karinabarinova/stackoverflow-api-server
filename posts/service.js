@@ -19,7 +19,8 @@ async function getById(id) {
     return await getPost(id);
 }
 
-async function create(params) {
+async function create(params, author) {
+    params.author = author;
     await db.Post.create(params);
 }
 

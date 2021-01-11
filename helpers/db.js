@@ -21,8 +21,10 @@ async function initialize() {
     //define relations
     db.User.hasMany(db.RefreshToken, {onDelete: 'CASCADE'})
     db.RefreshToken.belongsTo(db.User)
-    db.User.hasMany(db.Post, { as: "Posts", foreignKey: "author"})
-    db.Post.belongsTo(db.User, { as: "User", foreignKey: "author"})
+    db.User.hasMany(db.Post, {
+        foreignKey: 'id'
+    });
+    db.Post.belongsTo(db.User)
     
     //sync all models with database
     await sequelize.sync()

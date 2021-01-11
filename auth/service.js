@@ -164,7 +164,7 @@ function generateRefreshToken(user, ipAddress) {
     return new db.RefreshToken({
         userId: user.id,
         token: randomTokenString(),
-        expires: new Date(Date.now() + 7*24*60*60*1000),
+        expires: new Date(Date.now() + 1*24*60*60*1000), //1 day
         createdByIp: ipAddress
     });
 }

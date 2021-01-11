@@ -1,5 +1,5 @@
 const { DataTypes, Sequelize } = require('sequelize');
-const User = require('../users/model')
+// const User = require('../users/model')
 
 module.exports = model;
 

@@ -4,6 +4,7 @@ module.exports = model;
 
 function model(sequelize) {
     const attributes = {
+        userId: {type: DataTypes.INTEGER},
         token: { type: DataTypes.STRING },
         expires: { type: DataTypes.DATE },
         created: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
