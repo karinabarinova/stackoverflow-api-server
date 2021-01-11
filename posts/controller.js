@@ -16,7 +16,7 @@ router.delete('/:id', authorize(), _delete)
 module.exports = router
 
 function getAll(req, res, next) {
-    postService.getAll()
+    postService.getAll(req.query)
         .then(posts => res.json(posts))
         .catch(next);
 }

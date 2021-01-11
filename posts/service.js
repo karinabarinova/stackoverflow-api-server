@@ -2,7 +2,8 @@ const config = require('../config.json')
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const db = require('../helpers/db');
-
+const { Op } = require('sequelize');
+const paginate = require('../helpers/pagination')
 module.exports = {
     getAll,
     getById,
@@ -11,8 +12,37 @@ module.exports = {
     delete: _delete
 };
 
-async function getAll() {
-    return await db.Post.findAll();
+async function getAll(query) {
+    const { q, page, limit, order_by, order_direction} = query
+    let search = {}
+    let order = []
+
+    if (q) {
+        search = {
+            where: {
+                name: {
+                    [Op.like]: `%${q}%`
+                }
+            }
+        }
+    }
+
+    if (order_by && order_direction)
+        order.push([order_by, order_direction])
+
+    const transform = (posts) => {
+        return posts.map(post => {
+            return {
+                title: post.title,
+                content: post.content,
+                categories: post.categories
+            }
+        })
+    }
+
+    const posts = await paginate(db.Post, page, limit, search, order, transform)
+    return { data: posts} //?
+    // return await db.Post.findAll();
 }
 
 async function getById(id) {
