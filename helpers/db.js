@@ -17,6 +17,7 @@ async function initialize() {
     db.User = require('../users/model')(sequelize)
     db.RefreshToken = require('../users/refresh-token.model')(sequelize)
     db.Post = require('../posts/model')(sequelize)
+    db.Comment = require('../comment/model')(sequelize)
 
     //define relations
     db.User.hasMany(db.RefreshToken, {onDelete: 'CASCADE'})
@@ -25,6 +26,10 @@ async function initialize() {
         foreignKey: 'id'
     });
     db.Post.belongsTo(db.User)
+    db.Post.hasMany(db.Comment, {
+        foreignKey: 'id'
+    })
+    db.Comment.belongsTo(db.Post)
     
     //sync all models with database
     await sequelize.sync()

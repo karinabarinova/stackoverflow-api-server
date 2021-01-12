@@ -5,7 +5,8 @@ const paginate = async (model, pageSize, pageLimit, search = {}, order = {}, tra
 
         let options = {
             offset: getOffset(page, limit),
-            limit
+            limit,
+            status: "active"
         }
 
         if (Object.keys(search).length)
@@ -27,7 +28,7 @@ const paginate = async (model, pageSize, pageLimit, search = {}, order = {}, tra
             data: rows
         }
     } catch (e) {
-        console.log(e)
+        console.log(e) //Fix error printing to next
     }
 }
 

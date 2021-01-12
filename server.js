@@ -17,6 +17,7 @@ app.use(cors({ origin: (origin, callback) => callback(null, true), credentials: 
 app.use('/api/users', require('./users/controller'))
 app.use('/api/auth', require('./auth/controller'))
 app.use('/api/posts', require('./posts/controller'))
+app.use('/api/comments', require('./comment/controller'))
 //global error handler
 app.use(errorHandler)
 //start server

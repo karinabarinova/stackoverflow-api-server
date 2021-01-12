@@ -1,16 +1,9 @@
 const { DataTypes, Sequelize } = require('sequelize');
-// const User = require('../users/model')
 
 module.exports = model;
 
 function model(sequelize) {
     const attributes = {
-        id: {
-            type: DataTypes.INTEGER,
-            autoIncrement: true,
-            primaryKey: true,
-            allowNull: false
-        },
         author: {
             type: DataTypes.INTEGER,
             allowNull: false

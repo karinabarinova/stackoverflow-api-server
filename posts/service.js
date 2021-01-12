@@ -41,8 +41,7 @@ async function getAll(query) {
     }
 
     const posts = await paginate(db.Post, page, limit, search, order, transform)
-    return { data: posts} //?
-    // return await db.Post.findAll();
+    return { data: posts} 
 }
 
 async function getById(id) {
