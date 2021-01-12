@@ -9,4 +9,17 @@ const commentService = require('../services/comment.service')
 module.exports = router
 //routers
 router.get('/:id', getById)
+router.delete('/:id', authorize(), _delete)
 
+
+function getById(req, res, next) {
+    commentService.getById(req.params.id)
+        .then(post => res.json(post))
+        .catch(next)
+}
+
+function _delete(req, res, next) {
+    commentService.delete(req.params.id)
+        .then(() => res.json({message: 'Comment deleted successfully'}))
+        .catch(next)
+}
