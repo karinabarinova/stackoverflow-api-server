@@ -8,5 +8,5 @@ const commentService = require('../services/comment.service')
 
 module.exports = router
 //routers
-// router.post('/:post_id/comments', createSchema, create)
+router.get('/:id', getById)
 
