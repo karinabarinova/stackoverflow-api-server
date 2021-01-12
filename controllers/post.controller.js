@@ -12,11 +12,19 @@ router.get('/:id', getById) //public
 router.post('/', authorize(), createSchema, create)
 router.patch('/:id', authorize(), updateSchema, update)
 router.delete('/:id', authorize(), _delete)
+router.post('/:id/comments', authorize(), createCommentSchema, createComment)
+router.get('/:id/comments', getAllComments)
 
 module.exports = router
 
 function getAll(req, res, next) {
     postService.getAll(req.query)
+        .then(posts => res.json(posts))
+        .catch(next);
+}
+
+function getAllComments(req, res, next) {
+    postService.getAllComments(req.params.id)
         .then(posts => res.json(posts))
         .catch(next);
 }
@@ -62,5 +70,18 @@ function update(req, res, next) {
 function _delete(req, res, next) {
     postService.delete(req.params.id)
         .then(() => res.json({message: 'Post deleted successfully'}))
+        .catch(next)
+}
+
+function createCommentSchema(req, res, next) {
+    const schema = Joi.object({
+        content: Joi.string().empty('').required()
+    })
+    validateRequest(req, next, schema)
+}
+
+function createComment(req, res, next) {
+    postService.createComment(req.body.content, req.params.post_id)
+        .then((post) => res.json(post))
         .catch(next)
 }

@@ -9,7 +9,9 @@ module.exports = {
     getById,
     create,
     update,
-    delete: _delete
+    delete: _delete,
+    createComment,
+    getAllComments
 };
 
 async function getAll(query) {
@@ -67,6 +69,19 @@ async function _delete(id) {
     await post.destroy();
 }
 
+async function createComment(content, PostId) {
+    await db.Comment.create({
+        PostId,
+        content
+    })
+}
+
+async function getAllComments(PostId) {
+    return await db.Comment.findAll({ where: {
+        PostId
+    }})
+    
+}
 // helper functions
 
 async function getPost(id) {
