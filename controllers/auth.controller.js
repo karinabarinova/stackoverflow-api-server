@@ -3,7 +3,7 @@ const router = express.Router()
 const Joi = require('joi')
 const validateRequest = require('../middleware/validate-request')
 const authorize = require('../middleware/authorize')//for logout
-const authService = require('./service')
+const authService = require('../services/auth.service')
 const Role = require('../helpers/role')
 
 //routes
@@ -163,7 +163,8 @@ function setTokenCookie(res, token) {
     };
     res.cookie('refreshToken', token, cookieOptions);
 }
-// function logOut(req, res) {
-//     console.log(req.cookie)
-//     // console.log(req.user.token)
+// function logOut(req, res, next) {
+//     authService.logOut(req.user.id, req.cookies)
+//         .then(() => res.json({ message: "Logged out successfully"}))
+//         .catch(next)
 // }

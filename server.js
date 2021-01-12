@@ -14,10 +14,10 @@ app.use(cors({ origin: (origin, callback) => callback(null, true), credentials: 
 
 
 //api routes for user, posts, etc
-app.use('/api/users', require('./users/controller'))
-app.use('/api/auth', require('./auth/controller'))
-app.use('/api/posts', require('./posts/controller'))
-app.use('/api/comments', require('./comment/controller'))
+app.use('/api/users', require('./controllers/user.controller'))
+app.use('/api/auth', require('./controllers/auth.controller'))
+app.use('/api/posts', require('./controllers/post.controller'))
+app.use('/api/comments', require('./controllers/comment.controller'))
 //global error handler
 app.use(errorHandler)
 //start server

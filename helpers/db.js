@@ -14,10 +14,10 @@ async function initialize() {
 
     //connect to db
     const sequelize = new Sequelize(database, user, password, {dialect: 'mysql'})
-    db.User = require('../users/model')(sequelize)
-    db.RefreshToken = require('../users/refresh-token.model')(sequelize)
-    db.Post = require('../posts/model')(sequelize)
-    db.Comment = require('../comment/model')(sequelize)
+    db.User = require('../models/user.model')(sequelize)
+    db.RefreshToken = require('../models/refresh-token.model')(sequelize)
+    db.Post = require('../models/post.model')(sequelize)
+    db.Comment = require('../models/comment.model')(sequelize)
 
     //define relations
     db.User.hasMany(db.RefreshToken, {onDelete: 'CASCADE'})
@@ -27,7 +27,8 @@ async function initialize() {
     });
     db.Post.belongsTo(db.User)
     db.Post.hasMany(db.Comment, {
-        foreignKey: 'id'
+        // foreignKey: 'id',
+        onDelete: 'CASCADE'
     })
     db.Comment.belongsTo(db.Post)
     

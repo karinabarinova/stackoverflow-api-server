@@ -6,5 +6,13 @@ const { Op } = require('sequelize');
 const paginate = require('../helpers/pagination')
 module.exports = {
     create,
-    update,
+    // update,
 };
+
+async function create(content, PostId) {
+    await db.Comment.create({
+        PostId,
+        content
+    })
+}
+

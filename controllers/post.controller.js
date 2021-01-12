@@ -4,7 +4,7 @@ const Joi = require('joi')
 const validateRequest = require('../middleware/validate-request')
 const authorize = require('../middleware/authorize')
 // const userService = require('./service')
-const postService = require('./service')
+const postService = require('../services/post.service')
 
 //routes
 router.get('/', getAll) //public TO DO: Add pagination

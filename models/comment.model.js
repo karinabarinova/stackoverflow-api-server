@@ -4,10 +4,6 @@ module.exports = model;
 
 function model(sequelize) {
     const attributes = {
-        author: {
-            type: DataTypes.INTEGER,
-            allowNull: false
-        },
         publish_date: {
             type: DataTypes.DATE,
             allowNull: false,

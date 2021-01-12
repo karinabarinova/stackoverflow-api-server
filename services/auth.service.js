@@ -17,6 +17,7 @@ module.exports = {
     forgotPassword,
     validateResetToken,
     resetPassword,
+    // logOut
 };
 
 async function authenticate({ login, email, password, ipAddress }) {
@@ -238,3 +239,13 @@ function basicDetails(user) {
 async function hash(password) {
     return await bcrypt.hash(password, 10);
 }
+
+// async function logOut(id, { refreshToken }) {
+//     const row = await db.RefreshToken.findOne( {where: {UserId: id, token: refreshToken }})
+//     console.log(row.dataValues.expires)
+//     if (!row)
+//         throw "Invalid token in cookies"
+//     row.expires = new Date(Date.now())
+//     await row.save()
+//     console.log(row.dataValues.expires)
+// }
