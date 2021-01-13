@@ -3,6 +3,8 @@ const router = express.Router()
 const Joi = require('joi')
 const validateRequest = require('../middleware/validate-request')
 const authorize = require('../middleware/authorize')
+// const Role = require('../helpers/role')
+const isOwner = require('../middleware/isOwner')
 // const userService = require('./service')
 const postService = require('../services/post.service')
 
@@ -10,7 +12,7 @@ const postService = require('../services/post.service')
 router.get('/', getAll) //public TO DO: Add pagination
 router.get('/:id', getById) //public
 router.post('/', authorize(), createSchema, create)
-router.patch('/:id', authorize(), updateSchema, update)
+router.patch('/:id', authorize(), isOwner.post(), updateSchema, update)
 router.delete('/:id', authorize(), _delete)
 router.post('/:id/comments', authorize(), createCommentSchema, createComment)
 router.get('/:id/comments', getAllComments)
