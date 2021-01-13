@@ -77,6 +77,7 @@ async function deleteLike(id) {
         PostId: id
     }} );
     await like.destroy();
+    // updateRating(id, )
 }
 
 async function createComment(content, PostId) {
@@ -94,6 +95,11 @@ async function getAllComments(PostId) {
 }
 
 async function createLike(params, author, PostId) {
+    //check if like/dislike already is in the table
+    if (await db.Like.findOne({ where: { author, type: params.type } })) {
+        throw 'You cannot like this post again';
+    }
+
     params.author = author;
     params.PostId = PostId
     await db.Like.create(params);
@@ -101,10 +107,20 @@ async function createLike(params, author, PostId) {
 }
 
 async function getAllLikes(PostId) {
-    return await db.Like.findAll({ where: {
-        PostId
+    const likes = await db.Like.findAll({ where: {
+        PostId,
+    }, include: { 
+        model: db.Post,
+        as: "post",
+        where: {
+            status: "active"
+        }
     }})
-    
+
+    for ( var prop in likes) {
+        likes[prop] = basicDetails(likes[prop].dataValues)
+    }
+    return likes
 }
 // helper functions
 
@@ -126,4 +142,9 @@ async function updateRating(postId, likeType) {
         if (user.rating > 0)
             user.rating--
     await user.save()
+}
+
+function basicDetails(like) {
+    const { id, author, publish_date, type, PostId, CommentId } = like;
+    return { id, author, publish_date, type, PostId, CommentId };
 }
