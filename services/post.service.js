@@ -13,7 +13,8 @@ module.exports = {
     createComment,
     getAllComments,
     createLike,
-    getAllLikes
+    getAllLikes,
+    deleteLike
 };
 
 async function getAll(query) {
@@ -69,6 +70,13 @@ async function update(id, params) {
 async function _delete(id) {
     const post = await getPost(id);
     await post.destroy();
+}
+
+async function deleteLike(id) {
+    const like = await db.Like.findOne( { where: {
+        PostId: id
+    }} );
+    await like.destroy();
 }
 
 async function createComment(content, PostId) {

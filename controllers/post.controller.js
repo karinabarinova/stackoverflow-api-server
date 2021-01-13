@@ -17,6 +17,7 @@ router.get('/:id/comments', getAllComments)
 //likes
 router.post('/:id/like', authorize(), createLikeSchema, createLike)
 router.get('/:id/like', authorize(), getAllLikes)
+router.delete('/:id/like', authorize(), deleteLike)
 
 module.exports = router
 
@@ -79,6 +80,11 @@ function update(req, res, next) {
 function _delete(req, res, next) {
     postService.delete(req.params.id)
         .then(() => res.json({message: 'Post deleted successfully'}))
+        .catch(next)
+}
+function deleteLike(req, res, next) {
+    postService.deleteLike(req.params.id)
+        .then(() => res.json({message: 'Like deleted successfully'}))
         .catch(next)
 }
 
