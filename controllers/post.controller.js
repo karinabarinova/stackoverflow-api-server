@@ -98,7 +98,7 @@ function createCommentSchema(req, res, next) {
 }
 
 function createComment(req, res, next) {
-    postService.createComment(req.body.content, req.params.post_id)
+    postService.createComment(req.user.id, req.body.content, req.params.id)
         .then((post) => res.json(post))
         .catch(next)
 }

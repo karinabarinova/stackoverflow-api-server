@@ -11,6 +11,7 @@ module.exports = router
 router.get('/:id', getById)
 router.patch('/:id', authorize(), updateSchema, update)
 router.delete('/:id', authorize(), _delete)
+router.post('/:id/like', authorize(), createLikeSchema, createLike)
 
 
 function getById(req, res, next) {
@@ -35,5 +36,18 @@ function updateSchema(req, res, next) {
 function update(req, res, next) {
     commentService.update(req.params.id, req.body)
         .then(post => res.json(post))
+        .catch(next)
+}
+
+function createLikeSchema(req, res, next) {
+    const schema = Joi.object({
+        type: Joi.string().empty('').valid("like", "dislike").required()
+    })
+    validateRequest(req, next, schema)
+}
+
+function createLike(req, res, next) {
+    commentService.createLike(req.body, req.user.id, req.params.id)
+        .then(() => res.json({ message: "Like Creation successful"}))
         .catch(next)
 }

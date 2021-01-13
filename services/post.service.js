@@ -80,8 +80,10 @@ async function deleteLike(id) {
     // updateRating(id, )
 }
 
-async function createComment(content, PostId) {
+async function createComment(author, content, PostId) {
+    console.log(PostId)
     await db.Comment.create({
+        author,
         PostId,
         content
     })
@@ -97,7 +99,7 @@ async function getAllComments(PostId) {
 async function createLike(params, author, PostId) {
     //check if like/dislike already is in the table
     if (await db.Like.findOne({ where: { author, type: params.type } })) {
-        throw 'You cannot like this post again';
+        throw `You cannot ${params.type} this post again`;
     }
 
     params.author = author;

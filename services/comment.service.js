@@ -7,7 +7,8 @@ const paginate = require('../helpers/pagination')
 module.exports = {
     getById,
     update,
-    delete: _delete
+    delete: _delete,
+    createLike
 };
 
 
@@ -30,9 +31,35 @@ async function update(id, params) {
     return comment.get()
 }
 
+async function createLike(params, author, CommentId) {
+    //check if like/dislike already is in the table
+    if (await db.Like.findOne({ where: { author, type: params.type } })) {
+        throw  `You cannot ${params.type} this comment again`;
+    }
+
+    params.author = author;
+    params.CommentId = CommentId
+    await db.Like.create(params);
+    updateRating(params.CommentId, params.type)
+}
+
 //helper function
 async function getComment(id) {
     const comment = await db.Comment.findByPk(id);
     if (!comment) throw 'Comment not found';
     return comment;
+}
+
+async function updateRating(commentId, likeType) {
+    const comment = await db.Comment.findOne({ where: {
+        id: commentId
+    }})
+    const user = await db.User.findByPk(comment.author)
+
+    if (likeType === 'like')
+        user.rating++
+    else 
+        if (user.rating > 0)
+            user.rating--
+    await user.save()
 }
