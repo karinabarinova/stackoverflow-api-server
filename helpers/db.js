@@ -46,6 +46,15 @@ async function initialize() {
         foreignKey: 'PostId',
         as: "post"
     })
+
+    db.Comment.hasMany(db.Like, {
+        as: 'likes',
+        onDelete: 'CASCADE'
+    })
+    db.Like.belongsTo(db.Post, { 
+        foreignKey: 'CommentId',
+        as: "comment"
+    })
     
     //sync all models with database
     await sequelize.sync()

@@ -8,12 +8,30 @@ module.exports = {
     getById,
     update,
     delete: _delete,
-    createLike
+    createLike,
+    getAllLikes
 };
 
 
 async function getById(id) {
     return await getComment(id);
+}
+
+async function getAllLikes(CommentId) {
+    const likes = await db.Like.findAll({ where: {
+        CommentId,
+    }})
+    // , include: { 
+    //     model: db.Comment,
+    //     as: "comment",
+    //     where: {
+    //         status: "active"
+    //     }
+
+    // for ( var prop in likes) {
+    //     likes[prop] = basicDetails(likes[prop].dataValues)
+    // }
+    return likes
 }
 
 async function _delete(id) {

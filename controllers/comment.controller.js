@@ -12,12 +12,18 @@ router.get('/:id', getById)
 router.patch('/:id', authorize(), updateSchema, update)
 router.delete('/:id', authorize(), _delete)
 router.post('/:id/like', authorize(), createLikeSchema, createLike)
-
+router.get('/:id/like', authorize(), getAllLikes)
 
 function getById(req, res, next) {
     commentService.getById(req.params.id)
         .then(post => res.json(post))
         .catch(next)
+}
+
+function getAllLikes(req, res, next) {
+    commentService.getAllLikes(req.params.id)
+        .then(likes => res.json(likes))
+        .catch(next);
 }
 
 function _delete(req, res, next) {
