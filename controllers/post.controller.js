@@ -16,6 +16,7 @@ router.post('/:id/comments', authorize(), createCommentSchema, createComment)
 router.get('/:id/comments', getAllComments)
 //likes
 router.post('/:id/like', authorize(), createLikeSchema, createLike)
+router.get('/:id/like', authorize(), getAllLikes)
 
 module.exports = router
 
@@ -28,6 +29,12 @@ function getAll(req, res, next) {
 function getAllComments(req, res, next) {
     postService.getAllComments(req.params.id)
         .then(posts => res.json(posts))
+        .catch(next);
+}
+
+function getAllLikes(req, res, next) {
+    postService.getAllLikes(req.params.id)
+        .then(likes => res.json(likes))
         .catch(next);
 }
 
