@@ -13,6 +13,7 @@ router.patch('/:id', authorize(), updateSchema, update)
 router.delete('/:id', authorize(), _delete)
 router.post('/:id/like', authorize(), createLikeSchema, createLike)
 router.get('/:id/like', authorize(), getAllLikes)
+router.delete('/:id/like', authorize(), deleteLike)
 
 function getById(req, res, next) {
     commentService.getById(req.params.id)
@@ -29,6 +30,12 @@ function getAllLikes(req, res, next) {
 function _delete(req, res, next) {
     commentService.delete(req.params.id)
         .then(() => res.json({message: 'Comment deleted successfully'}))
+        .catch(next)
+}
+
+function deleteLike(req, res, next) {
+    commentService.deleteLike(req.params.id)
+        .then(() => res.json({message: 'Like deleted successfully'}))
         .catch(next)
 }
 

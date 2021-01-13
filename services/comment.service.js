@@ -8,6 +8,7 @@ module.exports = {
     getById,
     update,
     delete: _delete,
+    deleteLike,
     createLike,
     getAllLikes
 };
@@ -37,6 +38,16 @@ async function getAllLikes(CommentId) {
 async function _delete(id) {
     const comment = await getComment(id);
     await comment.destroy();
+}
+
+async function deleteLike(id) {
+    const like = await db.Like.findOne( { where: {
+        CommentId: id
+    }} );
+
+    //TO DO: add error check if post not found
+    await like.destroy();
+    // updateRating(id, )
 }
 
 async function update(id, params) {

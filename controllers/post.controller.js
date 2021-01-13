@@ -84,6 +84,7 @@ function _delete(req, res, next) {
         .then(() => res.json({message: 'Post deleted successfully'}))
         .catch(next)
 }
+
 function deleteLike(req, res, next) {
     postService.deleteLike(req.params.id)
         .then(() => res.json({message: 'Like deleted successfully'}))
