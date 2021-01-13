@@ -97,9 +97,9 @@ function model(sequelize) {
             allowNull: true
         },
         rating: {
-            type: DataTypes.FLOAT,
+            type: DataTypes.INTEGER,
             allowNull: false,
-            defaultValue: 5.0
+            defaultValue: 0
         },
         role: {
             type: DataTypes.STRING,
