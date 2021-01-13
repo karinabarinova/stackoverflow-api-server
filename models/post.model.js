@@ -6,7 +6,11 @@ function model(sequelize) {
     const attributes = {
         author: {
             type: DataTypes.INTEGER,
-            allowNull: false
+            allowNull: false,
+            references: {
+                model: "User",
+                key: "id"
+            }
         },
         title: {
             type: DataTypes.STRING,
@@ -35,7 +39,12 @@ function model(sequelize) {
             set(value) {
                 return this.setDataValue('categories', value)
             }
-        }
+        },
+        // UserId: {
+        //     type: Sequelize.INTEGER,
+        //     allowNull: false,
+            
+        // }
     }
 
     return sequelize.define('Post', attributes, {})

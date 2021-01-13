@@ -6,8 +6,8 @@ const { Op } = require('sequelize');
 const paginate = require('../helpers/pagination')
 module.exports = {
     getById,
+    update,
     delete: _delete
-    // update,
 };
 
 
@@ -18,6 +18,16 @@ async function getById(id) {
 async function _delete(id) {
     const comment = await getComment(id);
     await comment.destroy();
+}
+
+async function update(id, params) {
+    console.log(params)
+    const comment = await getComment(id);
+
+    Object.assign(comment, params);
+    await comment.save();
+
+    return comment.get()
 }
 
 //helper function

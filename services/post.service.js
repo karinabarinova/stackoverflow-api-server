@@ -11,7 +11,8 @@ module.exports = {
     update,
     delete: _delete,
     createComment,
-    getAllComments
+    getAllComments,
+    createLike
 };
 
 async function getAll(query) {
@@ -81,6 +82,12 @@ async function getAllComments(PostId) {
         PostId
     }})
     
+}
+
+async function createLike(params, author, PostId) {
+    params.author = author;
+    params.PostId = PostId
+    await db.Like.create(params);
 }
 // helper functions
 

@@ -9,9 +9,26 @@ function model(sequelize) {
             allowNull: false,
             defaultValue: Sequelize.NOW
         },
+        status: {
+            type: DataTypes.ENUM('active', 'inactive'),
+            allowNull: false,
+            defaultValue: 'active'
+        },
         content: {
             type: DataTypes.STRING,
             allowNull: false
+        },
+        author: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
+        PostId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: "Post",
+                key: "id"
+            }
         }
     }
 

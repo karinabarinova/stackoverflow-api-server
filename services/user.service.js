@@ -12,7 +12,8 @@ module.exports = {
     getById,
     create,
     update,
-    delete: _delete
+    delete: _delete,
+    // uploadAvatar
 };
 
 async function getAll() {
@@ -71,6 +72,16 @@ async function _delete(id) {
     const user = await getUser(id);
     await user.destroy();
 }
+
+// async function uploadAvatar(id, file) {
+//     // const row = await db.RefreshToken.findOne( {where: {token: refreshToken }})
+//     // console.log(row.dataValues)
+//     // console.log(file)
+//     const user = await getUser(id)
+//     user.avatar = file.buffer
+//     await user.save()
+    
+// }
 
 // helper functions
 

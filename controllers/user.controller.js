@@ -1,10 +1,23 @@
 const express = require('express')
 const router = express.Router()
 const Joi = require('joi')
+// const multer = require('multer')
 const validateRequest = require('../middleware/validate-request')
 const authorize = require('../middleware/authorize')
 const Role = require('../helpers/role')
 const userService = require('../services/user.service')
+
+// const upload = multer( {
+//     // dest: 'resources/avatars',
+//     limits: {
+//         fileSize: 1000000
+//     },
+//     fileFilter(req, file, cb) {
+//         if (!file.originalname.match(/\.(jpg|jpeg|png)$/))
+//             return cb(new Error('Please upload an image'))
+//         cb(undefined, true)
+//     }
+// })
 
 //routes
 router.get('/', authorize(Role.Admin), getAll);
@@ -12,6 +25,9 @@ router.post('/', authorize(Role.Admin), createSchema, create);
 router.get('/:id', authorize(), getById);
 router.patch('/:id', authorize(), updateSchema, update);
 router.delete('/:id', authorize(), _delete);
+// router.post('/avatar', authorize(), upload.single('avatar'), uploadAvatar, (error, req, res, next) => {
+//     res.status(400).json({ error: error.message })
+// })
 
 module.exports = router
 
@@ -92,3 +108,14 @@ function _delete(req, res, next) {
         .then(() => res.json({message: 'User deleted successfully'}))
         .catch(next)
 }
+
+// async function uploadAvatar(req, res, next) {
+//     // console.log(req.file)
+//     userService.uploadAvatar(req.user.id, req.file)
+//         .then(() => res.json({ message: "Avatar uploaded"}))
+//         .catch(next)
+//     // req.user.avatar = req.file.buffer
+//     // await req.user.save()
+//     // res.send()
+// }
+

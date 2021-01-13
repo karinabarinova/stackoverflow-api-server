@@ -116,6 +116,9 @@ function model(sequelize) {
             type: DataTypes.VIRTUAL,
             get() { return !!(this.verified || this.passwordReset); }
         }
+        // avatar: {
+        //     type: DataTypes.BIGINT
+        // }
     }
 
     const options = {

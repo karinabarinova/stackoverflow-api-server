@@ -18,19 +18,34 @@ async function initialize() {
     db.RefreshToken = require('../models/refresh-token.model')(sequelize)
     db.Post = require('../models/post.model')(sequelize)
     db.Comment = require('../models/comment.model')(sequelize)
+    db.Like = require('../models/like.model')(sequelize)
 
     //define relations
     db.User.hasMany(db.RefreshToken, {onDelete: 'CASCADE'})
     db.RefreshToken.belongsTo(db.User)
     db.User.hasMany(db.Post, {
-        foreignKey: 'id'
+        as: "posts"
     });
-    db.Post.belongsTo(db.User)
+    db.Post.belongsTo(db.User, {
+        foreignKey: 'author',
+        as: "user"
+    })
     db.Post.hasMany(db.Comment, {
-        // foreignKey: 'id',
+        as: 'comments',
         onDelete: 'CASCADE'
     })
-    db.Comment.belongsTo(db.Post)
+    db.Comment.belongsTo(db.Post, {
+        foreignKey: 'PostId',
+        as: "post"
+    })
+    db.Post.hasMany(db.Like, {
+        as: 'likes',
+        onDelete: 'CASCADE'
+    })
+    db.Like.belongsTo(db.Post, { 
+        foreignKey: 'PostId',
+        as: "post"
+    })
     
     //sync all models with database
     await sequelize.sync()
