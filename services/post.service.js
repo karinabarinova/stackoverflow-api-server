@@ -97,6 +97,7 @@ async function createLike(params, author, PostId) {
     params.author = author;
     params.PostId = PostId
     await db.Like.create(params);
+    updateRating(params.PostId, params.type)
 }
 
 async function getAllLikes(PostId) {
@@ -111,4 +112,18 @@ async function getPost(id) {
     const post = await db.Post.findByPk(id);
     if (!post) throw 'Post not found';
     return post;
+}
+
+async function updateRating(postId, likeType) {
+    const post = await db.Post.findOne({ where: {
+        id: postId
+    }})
+    const user = await db.User.findByPk(post.author)
+
+    if (likeType === 'like')
+        user.rating++
+    else 
+        if (user.rating > 0)
+            user.rating--
+    await user.save()
 }
