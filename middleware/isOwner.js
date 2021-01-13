@@ -1,7 +1,7 @@
 const db = require('../helpers/db');
 const Role = require('../helpers/role')
 
-module.exports = { post };
+module.exports = { post, comment };
 
 function post() {
     return [
@@ -10,6 +10,20 @@ function post() {
             if (!post || post === null)
                 return res.status(404).json({ message: 'Post Not Found' })
             if (Number(post.author) !== req.user.id && req.user.role != Role.Admin) {
+                return res.status(401).json({ message: 'Unauthorized' });
+            }
+            next();
+        }   
+    ]   
+}
+
+function comment() {
+    return [
+        async (req, res, next) => {
+            const comment = await db.Comment.findByPk(req.params.id);
+            if (!comment || comment === null)
+                return res.status(404).json({ message: 'Comment Not Found' })
+            if (Number(comment.author) !== req.user.id && req.user.role != Role.Admin) {
                 return res.status(401).json({ message: 'Unauthorized' });
             }
             next();

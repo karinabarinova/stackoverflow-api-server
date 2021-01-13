@@ -3,13 +3,15 @@ const router = express.Router()
 const Joi = require('joi')
 const validateRequest = require('../middleware/validate-request')
 const authorize = require('../middleware/authorize')
+const isOwner = require('../middleware/isOwner')
+
 // const userService = require('./service')
 const commentService = require('../services/comment.service')
 
 module.exports = router
 //routers
 router.get('/:id', getById)
-router.patch('/:id', authorize(), updateSchema, update)
+router.patch('/:id', authorize(), isOwner.comment(), updateSchema, update)
 router.delete('/:id', authorize(), _delete)
 router.post('/:id/like', authorize(), createLikeSchema, createLike)
 router.get('/:id/like', authorize(), getAllLikes)
