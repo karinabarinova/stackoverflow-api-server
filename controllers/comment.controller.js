@@ -10,7 +10,7 @@ module.exports = router
 //routers
 router.get('/:id', getById)
 router.patch('/:id', authorize(), isOwner.comment(), updateSchema, update)
-router.delete('/:id', authorize(), _delete)
+router.delete('/:id', authorize(), isOwner.comment(), _delete)
 router.post('/:id/like', authorize(), createLikeSchema, createLike)
 router.get('/:id/like', authorize(), getAllLikes)
 router.delete('/:id/like', authorize(), deleteLike)
@@ -34,7 +34,7 @@ function _delete(req, res, next) {
 }
 
 function deleteLike(req, res, next) {
-    commentService.deleteLike(req.params.id)
+    commentService.deleteLike(req.params.id, req.user)
         .then(() => res.json({message: 'Like deleted successfully'}))
         .catch(next)
 }

@@ -1,9 +1,6 @@
-const config = require('../config.json')
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
 const db = require('../helpers/db');
-const { Op } = require('sequelize');
-const paginate = require('../helpers/pagination')
+const Role = require('../helpers/role')
+
 module.exports = {
     getById,
     update,
@@ -33,12 +30,16 @@ async function _delete(id) {
     await comment.destroy();
 }
 
-async function deleteLike(id) {
+async function deleteLike(id, user) {
+    console.log(user)
     await getComment(id);
     const like = await db.Like.findOne( { where: {
         CommentId: id
     }} );
-
+    console.log(like.author)
+    if (Number(like.author) !== user.id && user.role != Role.Admin) {
+        throw 'Unauthorized';
+    }
     await like.destroy();
     // updateRating(id, )
 }
@@ -53,7 +54,7 @@ async function update(id, params) {
 }
 
 async function createLike(params, author, CommentId) {
-    await getComment(id);
+    await getComment(CommentId);
     //check if like/dislike already is in the table
 
     if (await db.Like.findOne({ where: { author, type: params.type } })) {
