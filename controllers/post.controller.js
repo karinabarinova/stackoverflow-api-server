@@ -9,13 +9,12 @@ const Role = require('../helpers/role')
 
 //routes
 router.get('/', getAll) //public TO DO: Add pagination
-router.get('/:id', getById) //public
+router.get('/:id', getById)
 router.post('/', authorize(), createSchema, create)
 router.patch('/:id', authorize(), isOwner.post(), updateSchema, update)
 router.delete('/:id', authorize(), _delete)
 router.post('/:id/comments', authorize(), createCommentSchema, createComment)
 router.get('/:id/comments', getAllComments)
-//likes
 router.post('/:id/like', authorize(), createLikeSchema, createLike)
 router.get('/:id/like', authorize(), getAllLikes)
 router.delete('/:id/like', authorize(), deleteLike)
@@ -23,6 +22,7 @@ router.delete('/:id/like', authorize(), deleteLike)
 module.exports = router
 
 function getAll(req, res, next) {
+    // console.log
     postService.getAll(req.query)
         .then(posts => res.json(posts))
         .catch(next);

@@ -8,7 +8,8 @@ module.exports = {
     create,
     update,
     delete: _delete,
-    // uploadAvatar
+    uploadAvatar,
+    getAvatar
 };
 
 async function getAll() {
@@ -68,15 +69,30 @@ async function _delete(id) {
     await user.destroy();
 }
 
-// async function uploadAvatar(id, file) {
-//     // const row = await db.RefreshToken.findOne( {where: {token: refreshToken }})
-//     // console.log(row.dataValues)
-//     // console.log(file)
-//     const user = await getUser(id)
-//     user.avatar = file.buffer
-//     await user.save()
+async function uploadAvatar(id, file, protocol, host) {
+    if (!file)
+        throw 'No image provided'
+    const user = await getUser(id)
+    user.avatar = file.path
+    await user.save()
     
-// }
+}
+
+async function getAvatar(userId) {
+    const user = await db.User.findOne({
+        attributes: ['avatar'],
+        where: {
+            id: userId
+        },
+        raw: true
+    })
+
+    if (!user)
+        throw 'User not found'
+    if (!user.avatar)
+        throw 'No avatar provided'
+    return user
+}
 
 // helper functions
 
