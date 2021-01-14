@@ -20,9 +20,7 @@ async function getById(id) {
 
 async function getAllLikes(CommentId) {
 
-    const comment = await db.Comment.findByPk(CommentId)
-    if (!comment)
-        throw 'Comment not found'
+    await getComment(CommentId)
     const likes = await db.Like.findAll({ where: {
         CommentId,
     }})
@@ -36,17 +34,16 @@ async function _delete(id) {
 }
 
 async function deleteLike(id) {
+    await getComment(id);
     const like = await db.Like.findOne( { where: {
         CommentId: id
     }} );
 
-    //TO DO: add error check if post not found
     await like.destroy();
     // updateRating(id, )
 }
 
 async function update(id, params) {
-    console.log(params)
     const comment = await getComment(id);
 
     Object.assign(comment, params);
@@ -56,7 +53,9 @@ async function update(id, params) {
 }
 
 async function createLike(params, author, CommentId) {
+    await getComment(id);
     //check if like/dislike already is in the table
+
     if (await db.Like.findOne({ where: { author, type: params.type } })) {
         throw  `You cannot ${params.type} this comment again`;
     }

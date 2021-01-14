@@ -73,6 +73,7 @@ async function _delete(id) {
 }
 
 async function deleteLike(id) {
+    await getPost(id)
     const like = await db.Like.findOne( { where: {
         PostId: id
     }} );
@@ -81,7 +82,7 @@ async function deleteLike(id) {
 }
 
 async function createComment(author, content, PostId) {
-    console.log(PostId)
+    await getPost(PostId)
     await db.Comment.create({
         author,
         PostId,
@@ -90,6 +91,7 @@ async function createComment(author, content, PostId) {
 }
 
 async function getAllComments(PostId) {
+    await getPost(PostId)
     return await db.Comment.findAll({ where: {
         PostId
     }})
@@ -97,6 +99,7 @@ async function getAllComments(PostId) {
 }
 
 async function createLike(params, author, PostId) {
+    await getPost(PostId)
     //check if like/dislike already is in the table
     if (await db.Like.findOne({ where: { author, type: params.type } })) {
         throw `You cannot ${params.type} this post again`;
@@ -109,6 +112,7 @@ async function createLike(params, author, PostId) {
 }
 
 async function getAllLikes(PostId) {
+    await getPost(PostId)
     const likes = await db.Like.findAll({ where: {
         PostId,
     }, include: { 
