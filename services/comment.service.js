@@ -36,11 +36,13 @@ async function _delete(id) {
     await comment.destroy();
 }
 
-async function deleteLike(id, user) {
+async function deleteLike(id) {
     const like = await db.Like.findOne( { where: {
         CommentId: id
     }} );
+    likeTypeToRemove = like.type === 'like' ? 'dislike' : 'like'
     await like.destroy();
+    updateRating(id, likeTypeToRemove)
 }
 
 async function update(id, params) {
@@ -63,7 +65,7 @@ async function createLike(params, author, CommentId) {
     params.author = author;
     params.CommentId = CommentId
     await db.Like.create(params);
-    updateRating(params.CommentId, params.type)
+    updateRating(params.CommentId, params.type) //??
 }
 
 //helper function

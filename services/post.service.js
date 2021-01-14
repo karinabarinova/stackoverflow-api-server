@@ -74,8 +74,9 @@ async function deleteLike(id) {
     const like = await db.Like.findOne( { where: {
         PostId: id
     }} );
+    likeTypeToRemove = like.type === 'like' ? 'dislike' : 'like'
     await like.destroy();
-    // updateRating(id, )
+    updateRating(id, likeTypeToRemove)
 }
 
 async function createComment(author, content, PostId) {
