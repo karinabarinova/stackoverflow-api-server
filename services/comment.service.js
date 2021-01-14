@@ -19,7 +19,13 @@ async function getAllLikes(CommentId) {
 
     await getComment(CommentId)
     const likes = await db.Like.findAll({ where: {
-        CommentId,
+        CommentId,   
+    }, include: {
+        model: db.Comment,
+        as: "comment",
+        where: {
+            status: "active"
+        }
     }})
 
     return likes
