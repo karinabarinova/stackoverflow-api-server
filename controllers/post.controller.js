@@ -5,6 +5,7 @@ const validateRequest = require('../middleware/validate-request')
 const authorize = require('../middleware/authorize')
 const isOwner = require('../middleware/isOwner')
 const postService = require('../services/post.service')
+const Role = require('../helpers/role')
 
 //routes
 router.get('/', getAll) //public TO DO: Add pagination
@@ -63,11 +64,22 @@ function create(req, res, next) {
 }
 
 function updateSchema(req, res, next) {
-    const schema = Joi.object({
+    // const schema = Joi.object({
+    //     title: Joi.string(),
+    //     content: Joi.string(),
+    //     categories: Joi.string() //TO DO: add status
+    // })
+    const schemaRules = {
         title: Joi.string(),
         content: Joi.string(),
-        categories: Joi.string() //TO DO: add status
-    })
+        categories: Joi.string() //TO DO: add status 
+    }
+    if (req.user.role === Role.Admin) {
+        schemaRules.status = Joi.string().valid("active", "inactive")
+    }
+    
+    const schema = Joi.object(schemaRules)
+    
     validateRequest(req, next, schema)
 }
 

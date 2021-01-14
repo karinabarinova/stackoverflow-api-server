@@ -81,7 +81,7 @@ async function deleteLike(id) {
 
 async function createComment(author, content, PostId) {
     const post = await getPost(PostId)
-    if (post.status === 'actiive') {
+    if (post.status === 'active') {
         await db.Comment.create({
             author,
             PostId,

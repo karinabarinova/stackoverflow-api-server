@@ -9,11 +9,11 @@
     "secret": "top secret",
     "emailFrom": "info@usof.com",
     "smtpOption": {
-        "host": "smtp.ethereal.email",
+        "host": "smtp.gmail.com",
     "port": 587,
     "auth": {
-        "user": "earl.oberbrunner@ethereal.email",
-        "pass": "dPMdehPEMkV3VyfTpb"
+        "user": "usof.server@gmail.com",
+        "pass": "swagswag69"
         }
     }
 }
