@@ -31,17 +31,10 @@ async function _delete(id) {
 }
 
 async function deleteLike(id, user) {
-    console.log(user)
-    await getComment(id);
     const like = await db.Like.findOne( { where: {
         CommentId: id
     }} );
-    console.log(like.author)
-    if (Number(like.author) !== user.id && user.role != Role.Admin) {
-        throw 'Unauthorized';
-    }
     await like.destroy();
-    // updateRating(id, )
 }
 
 async function update(id, params) {

@@ -9,11 +9,11 @@ const commentService = require('../services/comment.service')
 module.exports = router
 //routers
 router.get('/:id', getById)
-router.patch('/:id', authorize(), isOwner.comment(), updateSchema, update)
+router.patch('/:id', authorize(), updateSchema, update)
 router.delete('/:id', authorize(), isOwner.comment(), _delete)
 router.post('/:id/like', authorize(), createLikeSchema, createLike)
 router.get('/:id/like', authorize(), getAllLikes)
-router.delete('/:id/like', authorize(), deleteLike)
+router.delete('/:id/like', authorize(), isOwner.likeComment(), deleteLike)
 
 function getById(req, res, next) {
     commentService.getById(req.params.id)
