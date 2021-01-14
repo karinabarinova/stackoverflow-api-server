@@ -21,9 +21,13 @@ async function initialize() {
     db.Like = require('../models/like.model')(sequelize)
 
     //define relations
-    db.User.hasMany(db.RefreshToken, {onDelete: 'CASCADE'})
-    db.RefreshToken.belongsTo(db.User)
+    db.User.hasMany(db.RefreshToken, {onDelete: 'CASCADE', foreignKey: 'userId'})
+    db.RefreshToken.belongsTo(db.User, {
+        foreignKey: 'userId',
+        as: "user"
+    })
     db.User.hasMany(db.Post, {
+        foreignKey: 'author',
         as: "posts"
     });
     db.Post.belongsTo(db.User, {

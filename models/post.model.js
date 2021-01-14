@@ -8,7 +8,7 @@ function model(sequelize) {
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
-                model: "User",
+                model: "Users",
                 key: "id"
             }
         },
@@ -39,12 +39,7 @@ function model(sequelize) {
             set(value) {
                 return this.setDataValue('categories', value)
             }
-        },
-        // UserId: {
-        //     type: Sequelize.INTEGER,
-        //     allowNull: false,
-            
-        // }
+        }
     }
 
     return sequelize.define('Post', attributes, {})

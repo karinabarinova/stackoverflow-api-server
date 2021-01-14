@@ -3,9 +3,7 @@ const router = express.Router()
 const Joi = require('joi')
 const validateRequest = require('../middleware/validate-request')
 const authorize = require('../middleware/authorize')
-// const Role = require('../helpers/role')
 const isOwner = require('../middleware/isOwner')
-// const userService = require('./service')
 const postService = require('../services/post.service')
 
 //routes

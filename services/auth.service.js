@@ -67,13 +67,9 @@ async function refreshToken({ token, ipAddress }) {
 
 async function revokeToken({ token, ipAddress }) {
     const refreshToken = await getRefreshToken(token);
-    console.log('Before')
-    console.log(refreshToken)
     // revoke token and save
     refreshToken.revoked = Date.now();
     refreshToken.revokedByIp = ipAddress;
-    console.log("After revoke")
-    console.log(refreshToken)
     await refreshToken.save();
 }
 
