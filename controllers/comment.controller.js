@@ -4,8 +4,6 @@ const Joi = require('joi')
 const validateRequest = require('../middleware/validate-request')
 const authorize = require('../middleware/authorize')
 const isOwner = require('../middleware/isOwner')
-
-// const userService = require('./service')
 const commentService = require('../services/comment.service')
 
 module.exports = router

@@ -19,19 +19,14 @@ async function getById(id) {
 }
 
 async function getAllLikes(CommentId) {
+
+    const comment = await db.Comment.findByPk(CommentId)
+    if (!comment)
+        throw 'Comment not found'
     const likes = await db.Like.findAll({ where: {
         CommentId,
     }})
-    // , include: { 
-    //     model: db.Comment,
-    //     as: "comment",
-    //     where: {
-    //         status: "active"
-    //     }
 
-    // for ( var prop in likes) {
-    //     likes[prop] = basicDetails(likes[prop].dataValues)
-    // }
     return likes
 }
 
