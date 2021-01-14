@@ -79,12 +79,17 @@ async function deleteLike(id) {
 }
 
 async function createComment(author, content, PostId) {
-    await getPost(PostId)
-    await db.Comment.create({
-        author,
-        PostId,
-        content
-    })
+    const post = await getPost(PostId)
+    if (post.status === 'actiive') {
+        await db.Comment.create({
+            author,
+            PostId,
+            content
+        })
+    } else {
+        throw 'You cannot add comments under inactive posts'
+    }
+    
 }
 
 async function getAllComments(PostId) {
