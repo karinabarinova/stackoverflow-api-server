@@ -80,9 +80,9 @@ async function updateRating(commentId, likeType) {
     const user = await db.User.findByPk(comment.author)
 
     if (likeType === 'like')
-        user.rating++
+        user.increment('rating')
     else 
         if (user.rating > 0)
-            user.rating--
+            user.increment('rating')
     await user.save()
 }
