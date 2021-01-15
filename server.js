@@ -20,6 +20,7 @@ app.use('/api/users', require('./controllers/user.controller'))
 app.use('/api/auth', require('./controllers/auth.controller'))
 app.use('/api/posts', require('./controllers/post.controller'))
 app.use('/api/comments', require('./controllers/comment.controller'))
+app.use('/api/categories', require('./controllers/category.controller'))
 //global error handler
 app.use(errorHandler)
 //start server
