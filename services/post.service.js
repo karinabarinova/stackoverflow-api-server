@@ -16,7 +16,13 @@ module.exports = {
 };
 
 async function getAll(query) {
-    const { q, page, limit, order_by, order_direction} = query
+    const { q, page, limit} = query
+    console.log(query)
+    var { order_by, order_direction } = query
+    if (order_by !== "id" && order_by !== "createdAt" && order_by !== 'updatedAt')
+        order_by = "createdAt"//should be number of likes
+    if (order_direction !== "desc" && order_direction !== "asc")
+        order_direction = "desc"
     let search = {}
     let order = []
 
