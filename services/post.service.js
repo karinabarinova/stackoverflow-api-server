@@ -17,18 +17,16 @@ module.exports = {
 
 async function getAll(query) {
     const { q, page, limit} = query
-    var { order_by, order_direction, fromDate, toDate } = query
+    var { order_by, order_direction, fromDate, toDate, status } = query
     if (order_by !== "id" && order_by !== "createdAt" 
     && order_by !== 'updatedAt' && order_by !== 'like')
         order_by = "createdAt"//should be number of likes
     if (order_direction !== "desc" && order_direction !== "asc")
         order_direction = "desc"
 
-    console.log(fromDate)
-    console.log(toDate)
-
     let search = {}
     let filter = []
+    let filterStatus = []
     let order = []
 
     if (q) {
@@ -47,6 +45,12 @@ async function getAll(query) {
     if (fromDate && toDate)
         filter.push([new Date(fromDate), new Date(toDate)])
 
+    if (status && (status === "active" || status === "inactive"))
+        filterStatus.push([status])
+
+    // if (!fromDate && status)
+    //     filter.push([status])
+
     const transform = (posts) => {
         return posts.map(post => {
             return {
@@ -57,7 +61,7 @@ async function getAll(query) {
         })
     }
 
-    const posts = await paginate(db.Post, page, limit, search, filter, order, transform)
+    const posts = await paginate(db.Post, page, limit, search, filter, filterStatus, order, transform)
     return { data: posts} 
 }
 
