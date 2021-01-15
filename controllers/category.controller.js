@@ -9,7 +9,7 @@ const categoryService = require('../services/category.service')
 module.exports = router
 //routers
 router.get('/', getAll)
-router.post('/:id', getById)
+router.get('/:id', getById)
 
 function getAll(req, res, next) {
     categoryService.getAll()
