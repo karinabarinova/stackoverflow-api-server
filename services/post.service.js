@@ -52,7 +52,18 @@ async function getById(id) {
 
 async function create(params, author) {
     params.author = author;
-    await db.Post.create(params);
+    const post = await db.Post.create(params);
+    const categories = params.categories.split(" ")
+    for (var category of categories) {
+        var categoryExists = await db.Category.findOne({ where: { title: category}})
+        if (categoryExists)
+            await categoryExists.addPost(post)
+        else {
+            const newCategory = await db.Category.create({title: category})
+            await newCategory.addPost(post)
+        }
+    }
+    
 }
 
 async function update(id, params) {

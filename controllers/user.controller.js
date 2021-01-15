@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const Joi = require('joi')
+const sharp = require('sharp')
 const multer = require('multer')
 const path = require('path')
 const uuid = require('uuidv1')
@@ -123,6 +124,8 @@ function _delete(req, res, next) {
 }
 
 async function uploadAvatar(req, res, next) {
+    // await sharp(req.file.path).resize({ width: 250, height: 250 }).png().toString();
+
     userService.uploadAvatar(req.user.id, req.file, req.protocol, req.hostname)
         .then(() => res.json({ message: "Avatar uploaded"}))
         .catch(next)
@@ -131,7 +134,7 @@ async function uploadAvatar(req, res, next) {
 async function getAvatar(req, res, next) {
         userService.getAvatar(req.params.id)
             .then((user) => {
-                // res.set('Content-Type', 'image/jpg');
+                res.set('Content-Type', 'image/jpg');
                 res.json(user.avatar)
                 // res.send(fs.readFileSync(user.avatar))
             })

@@ -22,7 +22,6 @@ router.delete('/:id/like', authorize(), deleteLike)
 module.exports = router
 
 function getAll(req, res, next) {
-    // console.log
     postService.getAll(req.query)
         .then(posts => res.json(posts))
         .catch(next);
