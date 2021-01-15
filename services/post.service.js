@@ -19,7 +19,8 @@ async function getAll(query) {
     const { q, page, limit} = query
     console.log(query)
     var { order_by, order_direction } = query
-    if (order_by !== "id" && order_by !== "createdAt" && order_by !== 'updatedAt')
+    if (order_by !== "id" && order_by !== "createdAt" 
+    && order_by !== 'updatedAt' && order_by !== 'updatedAt')
         order_by = "createdAt"//should be number of likes
     if (order_direction !== "desc" && order_direction !== "asc")
         order_direction = "desc"
@@ -43,8 +44,8 @@ async function getAll(query) {
         return posts.map(post => {
             return {
                 title: post.title,
-                content: post.content,
-                categories: post.categories
+                content: post.content
+                // categories: post.categories
             }
         })
     }
