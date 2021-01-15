@@ -9,6 +9,7 @@ module.exports = {
     delete: _delete,
     createComment,
     getAllComments,
+    getAllCategories,
     createLike,
     getAllLikes,
     deleteLike
@@ -108,8 +109,21 @@ async function getAllComments(PostId) {
     await getPost(PostId)
     return await db.Comment.findAll({ where: {
         PostId
-    }})
-    
+    }})   
+}
+
+async function getAllCategories(PostId) {
+    await getPost(PostId)
+    return await db.Post.findAll({ 
+        where: {id: PostId},
+        attributes: [],
+        include: [{
+            model: db.Category,
+            as: 'categories',
+            through: {
+                attributes: []
+            }
+    }]})
 }
 
 async function createLike(params, author, PostId) {
