@@ -5,7 +5,8 @@ module.exports = {
     getAll,
     getById,
     getAllPosts,
-    create
+    create,
+    update
 };
 
 async function getAll() {
@@ -38,6 +39,15 @@ async function create(params) {
         throw 'Category already exists'
     await db.Category.create(params);
 
+}
+
+async function update(params, id) {
+    const category = await getCategory(id);
+
+    Object.assign(category, params);
+    await category.save();
+
+    return category.get()
 }
 
 //helper functions
