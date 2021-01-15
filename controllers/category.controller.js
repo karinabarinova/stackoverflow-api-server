@@ -11,6 +11,7 @@ module.exports = router
 router.get('/', getAll)
 router.get('/:id', getById)
 router.get('/:id/posts', getAllPosts)
+router.post('/', createSchema, create)
 
 function getAll(req, res, next) {
     categoryService.getAll()
@@ -28,4 +29,18 @@ function getAllPosts(req, res, next) {
     categoryService.getAllPosts(req.params.id)
         .then(category => res.json(category))
         .catch(next);
+}
+
+function createSchema(req, res, next) {
+    const schema = Joi.object({
+        title: Joi.string().empty('').required(),
+        description: Joi.string().empty(''),
+    })
+    validateRequest(req, next, schema)
+}
+
+function create(req, res, next) {
+    categoryService.create(req.body)
+        .then(() => res.json({ message: "Category Creation successful"}))
+        .catch(next)
 }

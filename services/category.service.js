@@ -4,29 +4,9 @@ const { Op } = require('sequelize');
 module.exports = {
     getAll,
     getById,
-    getAllPosts
-    // create,
-    // update,
-    // delete: _delete,
-    // createComment,
-    // getAllComments,
-    // getAllCategories,
-    // createLike,
-    // getAllLikes,
-    // deleteLike
+    getAllPosts,
+    create
 };
-
-// await getPost(PostId)
-//     return await db.Post.findAll({ 
-//         where: {id: PostId},
-//         attributes: [],
-//         include: [{
-//             model: db.Category,
-//             as: 'categories',
-//             through: {
-//                 attributes: []
-//             }
-//     }]})
 
 async function getAll() {
     return await db.Category.findAll()
@@ -50,6 +30,14 @@ async function getAllPosts(id) {
         }]
     })
     return posts[0].posts
+}
+
+async function create(params) {
+    const exists = db.Category.findOne({ where: {title: params.title}})
+    if (exists)
+        throw 'Category already exists'
+    await db.Category.create(params);
+
 }
 
 //helper functions
