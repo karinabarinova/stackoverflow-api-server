@@ -3,7 +3,7 @@ const { Op } = require('sequelize');
 // const paginate = require('../helpers/pagination')
 module.exports = {
     getAll,
-    // getById,
+    getById,
     // create,
     // update,
     // delete: _delete,
@@ -17,4 +17,15 @@ module.exports = {
 
 async function getAll() {
     return await db.Category.findAll()
+}
+
+async function getById(id) {
+    return await getCategory(id)
+}
+
+//helper functions
+async function getCategory(id) {
+    const category = await db.Category.findByPk(id);
+    if (!category) throw 'Category not found';
+    return category;
 }

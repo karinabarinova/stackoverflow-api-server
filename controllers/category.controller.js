@@ -8,11 +8,17 @@ const categoryService = require('../services/category.service')
 
 module.exports = router
 //routers
-router.get('/', getAll) //public TO DO: Add pagination
-// router.get('/:id', getById)
+router.get('/', getAll)
+router.post('/:id', getById)
 
 function getAll(req, res, next) {
     categoryService.getAll()
-        .then(posts => res.json(posts))
+        .then(categories => res.json(categories))
+        .catch(next);
+}
+
+function getById(req, res, next) {
+    categoryService.getById(req.params.id)
+        .then(category => res.json(category))
         .catch(next);
 }
