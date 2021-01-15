@@ -1,4 +1,8 @@
-const paginate = async (model, pageSize, pageLimit, search = {}, order = {}, transform) => {
+const { Op } = require('sequelize')
+const db = require('../helpers/db');
+
+
+const paginate = async (model, pageSize, pageLimit, search = {}, filter = {}, order = {}, transform) => {
     try {
         const limit = parseInt(pageLimit, 10) || 15
         const page = parseInt(pageSize, 10) || 1
@@ -10,6 +14,12 @@ const paginate = async (model, pageSize, pageLimit, search = {}, order = {}, tra
                 status: "active"
             }   
         }
+
+        // console.log(filter[0])
+        // console.log(filter[1])
+
+        if (filter && filter.length)
+            options.where.createdAt = {[Op.between]: [filter[0][0], filter[0][1]]}
 
         if (Object.keys(search).length)
             options = {options, ...search}
@@ -27,6 +37,7 @@ const paginate = async (model, pageSize, pageLimit, search = {}, order = {}, tra
             nextPage: getNextPage(page, limit, count),
             total: count,
             limit,
+            filter,
             data: rows
         }
     } catch (e) {
