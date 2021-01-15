@@ -14,7 +14,7 @@ router.get('/:id', authorize(Role.Admin), getById)
 router.get('/:id/posts', authorize(Role.Admin), getAllPosts)
 router.post('/', authorize(Role.Admin), createSchema, create)//?//only for admins
 router.patch('/:id', authorize(Role.Admin), updateSchema, update)//only for admins
-// router.delete('/:id', authorize(Role.Admin), _delete)//only for admins
+router.delete('/:id', authorize(Role.Admin), _delete)//only for admins
 
 function getAll(req, res, next) {
     categoryService.getAll()
@@ -59,5 +59,11 @@ function updateSchema(req, res, next) {
 function update(req, res, next) {
     categoryService.update(req.body, req.params.id)
         .then((category) => res.json(category))
+        .catch(next)
+}
+
+function _delete(req, res, next) {
+    categoryService.delete(req.params.id)
+        .then(() => res.json({message: "Category deleted successfully"}))
         .catch(next)
 }

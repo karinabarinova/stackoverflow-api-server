@@ -6,7 +6,8 @@ module.exports = {
     getById,
     getAllPosts,
     create,
-    update
+    update,
+    delete: _delete
 };
 
 async function getAll() {
@@ -48,6 +49,12 @@ async function update(params, id) {
     await category.save();
 
     return category.get()
+}
+
+async function _delete(id) {
+    const category = await getCategory(id);
+    await category.destroy();
+
 }
 
 //helper functions
