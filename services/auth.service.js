@@ -9,12 +9,9 @@ const Role = require('../helpers/role')
 
 module.exports = {
     authenticate,
-    refreshToken,
-    revokeToken,
     register,
     verifyEmail,
     forgotPassword,
-    validateResetToken,
     resetPassword,
     logOut
 };
@@ -26,57 +23,19 @@ async function authenticate({ login, email, password, ipAddress }) {
         throw 'Email or password is incorrect';
     }
 
-    // authentication successful so generate jwt and refresh tokens
+    // authentication successful so generate jwt and token
     const jwtToken = generateJwtToken(user);
-    // const refreshToken = generateRefreshToken(user, ipAddress);
     const tokenRow = new db.RefreshToken({
         userId: user.id,
         token: jwtToken,
-        expires: new Date(Date.now() + 7*24*60*60*1000), //1 day
+        expires: new Date(Date.now() + 1*24*60*60*1000), //1 day
         createdByIp: ipAddress
     });
     await tokenRow.save()
-    // const refreshToken = jwt.sign({ sub: user.id, id: user.id }, config.secret)
-    // save refresh token
-    // await refreshToken.save();
-
-    // return basic details and tokens
     return {
         ...basicDetails(user),
         jwtToken
-        // refreshToken
     };
-}
-
-async function refreshToken({ token, ipAddress }) {
-    const refreshToken = await getRefreshToken(token);
-    const user = await refreshToken.getUser();
-
-    // replace old refresh token with a new one and save
-    const newRefreshToken = generateRefreshToken(user, ipAddress);
-    refreshToken.revoked = Date.now();
-    refreshToken.revokedByIp = ipAddress;
-    refreshToken.replacedByToken = newRefreshToken.token;
-    await refreshToken.save();
-    await newRefreshToken.save();
-
-    // generate new jwt
-    const jwtToken = generateJwtToken(user);
-
-    // return basic details and tokens
-    return {
-        ...basicDetails(user),
-        jwtToken,
-        refreshToken: newRefreshToken.token
-    };
-}
-
-async function revokeToken({ token, ipAddress }) {
-    const refreshToken = await getRefreshToken(token);
-    // revoke token and save
-    refreshToken.revoked = Date.now();
-    refreshToken.revokedByIp = ipAddress;
-    await refreshToken.save();
 }
 
 async function register(params, origin) {
@@ -151,28 +110,12 @@ async function resetPassword({ password }, token) {
 }
 
 //helper functions
-async function getRefreshToken(token) {
-    const refreshToken = await db.RefreshToken.findOne({ where: { token } });
-    if (!refreshToken || !refreshToken.isActive) throw 'Invalid token';
-    return refreshToken;
-}
 
 function generateJwtToken(user) {
     // create a jwt token containing the account id that expires in 15 minutes
     return jwt.sign({ sub: user.id, id: user.id }, config.secret, { expiresIn: '1h' });
     // return jwt.sign({ sub: user.id, id: user.id }, config.secret);
 
-}
-
-function generateRefreshToken(user, ipAddress) {
-    console.log("GeneraRefreshToken\n\n")
-    // create a refresh token that expires in 7 days
-    return new db.RefreshToken({
-        userId: user.id,
-        token: randomTokenString(),
-        expires: new Date(Date.now() + 7*24*60*60*1000), //1 day
-        createdByIp: ipAddress
-    });
 }
 
 function randomTokenString() {
@@ -248,10 +191,8 @@ async function hash(password) {
 async function logOut(id, {token}) {
     console.log(token)
     const row = await db.RefreshToken.findOne( {where: {UserId: id, token}})
-    // console.log(row.dataValues.expires)
     if (!row)
         throw "Invalid token in cookies"
     row.expires = new Date(Date.now())
     await row.save()
-    // console.log(row.dataValues.expires)
 }
