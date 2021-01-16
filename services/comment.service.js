@@ -85,6 +85,6 @@ async function updateRating(commentId, likeType) {
         user.increment('rating')
     else 
         if (user.rating > 0)
-            user.increment('rating')
+            user.decrement('rating')
     await user.save()
 }
