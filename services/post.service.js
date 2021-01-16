@@ -103,7 +103,7 @@ async function deleteLike(id) {
     }} );
     likeTypeToRemove = like.type === 'like' ? 'dislike' : 'like'
     await like.destroy();
-    updateRating(id, likeTypeToRemove)
+    updateUserRating(id, likeTypeToRemove)
 }
 
 async function createComment(author, content, PostId) {
@@ -151,7 +151,7 @@ async function createLike(params, author, PostId) {
     params.author = author;
     params.PostId = PostId
     await db.Like.create(params);
-    updateRating(params.PostId, params.type)
+    updateUserRating(params.PostId, params.type)
 }
 
 async function getAllLikes(PostId) {
@@ -179,7 +179,7 @@ async function getPost(id) {
     return post;
 }
 
-async function updateRating(postId, likeType) {
+async function updateUserRating(postId, likeType) {
     const post = await db.Post.findOne({ where: {
         id: postId
     }})
