@@ -48,9 +48,6 @@ async function getAll(query) {
     if (status && (status === "active" || status === "inactive"))
         filterStatus.push([status])
 
-    // if (!fromDate && status)
-    //     filter.push([status])
-
     const transform = (posts) => {
         return posts.map(post => {
             return {

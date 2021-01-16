@@ -15,9 +15,6 @@ const paginate = async (model, pageSize, pageLimit, search = {}, filter = {}, fi
             }   
         }
 
-        // console.log(filter[0])
-        // console.log(filter[1])
-
         if (filter && filter.length)
             options.where.createdAt = {[Op.between]: [filter[0][0], filter[0][1]]}
         if (filterStatus && filterStatus.length)
@@ -43,7 +40,8 @@ const paginate = async (model, pageSize, pageLimit, search = {}, filter = {}, fi
             data: rows
         }
     } catch (e) {
-        console.log(e) //Fix error printing to next
+        console.log(e)
+        throw 'Internal Server Error' //Fix error printing to next
     }
 }
 

@@ -19,7 +19,7 @@ router.post('/reset-password/:confirm_token', resetPasswordSchema, resetPassword
 
 
 
-// router.post('/logout', authorize(), logOut);
+router.post('/logout', authorize(), logOut);
 // router.post('/password-reset', passwordReset)
 // router.post('/password-reset/:confirm_token')
 
@@ -38,8 +38,9 @@ function authenticate(req, res, next) {
     const { login, email, password } = req.body;
     const ipAddress = req.ip;
     authService.authenticate({login, email, password, ipAddress })
-        .then(({ refreshToken, ...user }) => {
-            setTokenCookie(res, refreshToken);
+        .then(({...user }) => {
+            // console.log(user)
+            setTokenCookie(res, user.jwtToken);
             res.json(user);
         })
         .catch(next)
@@ -159,12 +160,12 @@ function setTokenCookie(res, token) {
     // create cookie with refresh token that expires in 7 days
     const cookieOptions = {
         httpOnly: true,
-        expires: new Date(Date.now() + 7*24*60*60*1000)
+        expires: new Date(Date.now() + 1*24*60*60*1000)
     };
-    res.cookie('refreshToken', token, cookieOptions);
+    res.cookie('token', token, cookieOptions);
 }
-// function logOut(req, res, next) {
-//     authService.logOut(req.user.id, req.cookies)
-//         .then(() => res.json({ message: "Logged out successfully"}))
-//         .catch(next)
-// }
+function logOut(req, res, next) {
+    authService.logOut(req.user.id, req.cookies)
+        .then(() => res.json({ message: "Logged out successfully"}))
+        .catch(next)
+}

@@ -7,7 +7,6 @@ const sendEmail = require('../helpers/send-email')
 const db = require('../helpers/db');
 const Role = require('../helpers/role')
 
-
 module.exports = {
     authenticate,
     refreshToken,
@@ -17,7 +16,7 @@ module.exports = {
     forgotPassword,
     validateResetToken,
     resetPassword,
-    // logOut
+    logOut
 };
 
 async function authenticate({ login, email, password, ipAddress }) {
@@ -29,16 +28,23 @@ async function authenticate({ login, email, password, ipAddress }) {
 
     // authentication successful so generate jwt and refresh tokens
     const jwtToken = generateJwtToken(user);
-    const refreshToken = generateRefreshToken(user, ipAddress);
-
+    // const refreshToken = generateRefreshToken(user, ipAddress);
+    const tokenRow = new db.RefreshToken({
+        userId: user.id,
+        token: jwtToken,
+        expires: new Date(Date.now() + 7*24*60*60*1000), //1 day
+        createdByIp: ipAddress
+    });
+    await tokenRow.save()
+    // const refreshToken = jwt.sign({ sub: user.id, id: user.id }, config.secret)
     // save refresh token
-    await refreshToken.save();
+    // await refreshToken.save();
 
     // return basic details and tokens
     return {
         ...basicDetails(user),
-        jwtToken,
-        refreshToken: refreshToken.token
+        jwtToken
+        // refreshToken
     };
 }
 
@@ -153,15 +159,18 @@ async function getRefreshToken(token) {
 
 function generateJwtToken(user) {
     // create a jwt token containing the account id that expires in 15 minutes
-    return jwt.sign({ sub: user.id, id: user.id }, config.secret, { expiresIn: '15m' });
+    return jwt.sign({ sub: user.id, id: user.id }, config.secret, { expiresIn: '1h' });
+    // return jwt.sign({ sub: user.id, id: user.id }, config.secret);
+
 }
 
 function generateRefreshToken(user, ipAddress) {
+    console.log("GeneraRefreshToken\n\n")
     // create a refresh token that expires in 7 days
     return new db.RefreshToken({
         userId: user.id,
         token: randomTokenString(),
-        expires: new Date(Date.now() + 1*24*60*60*1000), //1 day
+        expires: new Date(Date.now() + 7*24*60*60*1000), //1 day
         createdByIp: ipAddress
     });
 }
@@ -236,12 +245,13 @@ async function hash(password) {
     return await bcrypt.hash(password, 10);
 }
 
-// async function logOut(id, { refreshToken }) {
-//     const row = await db.RefreshToken.findOne( {where: {UserId: id, token: refreshToken }})
-//     console.log(row.dataValues.expires)
-//     if (!row)
-//         throw "Invalid token in cookies"
-//     row.expires = new Date(Date.now())
-//     await row.save()
-//     console.log(row.dataValues.expires)
-// }
+async function logOut(id, {token}) {
+    console.log(token)
+    const row = await db.RefreshToken.findOne( {where: {UserId: id, token}})
+    // console.log(row.dataValues.expires)
+    if (!row)
+        throw "Invalid token in cookies"
+    row.expires = new Date(Date.now())
+    await row.save()
+    // console.log(row.dataValues.expires)
+}
