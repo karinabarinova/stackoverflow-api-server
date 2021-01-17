@@ -17,7 +17,7 @@ module.exports = {
 };
 
 async function authenticate({ login, email, password, ipAddress }) {
-    const user = await db.User.scope('withHash').findOne({ where: { email, login } });
+    const user = await db.User.scope('withHash').findOne({ where: { email: email.toLowerCase(), login: login.toLowerCase() } });
 
     if (!user || !user.isVerified || !(await bcrypt.compare(password, user.hash))) {
         throw 'Email or password is incorrect';
@@ -44,9 +44,9 @@ async function register(params, origin) {
         // send already registered error in email to prevent account enumeration
         return await sendAlreadyRegisteredEmail(params.email, origin);
     }
+    if (await db.User.findOne({ where: { login: params.login } }))
+        throw "Username is already taken"
     // create account object
-    // console.log(params)
-    // delete params.password
     const user = new db.User(params);
 
     // first registered account is an admin

@@ -1,6 +1,7 @@
 const config = require('../config.json')
 const mysql = require('mysql2/promise')
 const { Sequelize } = require('sequelize');
+const createUserInfo = require('../middleware/createInfo')
 
 module.exports = db = {}
 
@@ -72,4 +73,6 @@ async function initialize() {
     
     //sync all models with database
     await sequelize.sync()
+    await createUserInfo(db.User)
+
 }

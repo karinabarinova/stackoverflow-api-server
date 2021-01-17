@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const Joi = require('joi')
-const sharp = require('sharp')
+// const sharp = require('sharp')
 const multer = require('multer')
 const path = require('path')
 const uuid = require('uuidv1')
