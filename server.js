@@ -6,7 +6,15 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const errorHandler = require('./middleware/error-handler')
 const public = require('path').join(__dirname, 'resources')
+const AdminBro = require('admin-bro')
+const AdminBroExpress = require('@admin-bro/express')
+const adminBro = new AdminBro({
+  databases: [],
+  rootPath: '/api/admin',
+})
 
+const router = AdminBroExpress.buildRouter(adminBro)
+app.use(adminBro.options.rootPath, router)
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(cookieParser());
