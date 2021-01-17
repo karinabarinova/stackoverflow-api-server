@@ -1,11 +1,35 @@
 const express = require('express')
 const router = express.Router()
 const Joi = require('joi')
+const multer = require('multer')
+const uuid = require('uuidv1')
+const path = require('path')
 const validateRequest = require('../middleware/validate-request')
 const authorize = require('../middleware/authorize')
 const isOwner = require('../middleware/isOwner')
 const postService = require('../services/post.service')
 const Role = require('../helpers/role')
+
+// const storage = multer.diskStorage({
+//     destination: function(req, file, cb) {
+//         cb(null, 'resources/media')
+//     },
+//     filename: function(req, file, cb) {
+//         cb(null, file.fieldname + uuid() + path.extname(file.originalname))
+//     }
+// })
+// const media = multer( {
+//     storage: storage,
+//     dest: 'resources/media',
+//     limits: {
+//         fileSize: 1000000
+//     },
+//     fileFilter(req, file, cb) {
+//         if (!file.originalname.match(/\.(jpg|jpeg|png)$/))
+//             return cb(new Error('Please upload an image'))
+//         cb(undefined, true)
+//     }
+// }).single('media')
 
 //routes
 router.get('/', getAll) //public TO DO: Add pagination
@@ -53,28 +77,26 @@ function getById(req, res, next) {
 }
 
 function createSchema(req, res, next) {
-    // req.body.author = req.user.id
     const schema = Joi.object({
         title: Joi.string().empty(''),
         content: Joi.string().empty(''),
         categories: Joi.string().empty(''),
-        // author: Joi.number()
     })
     validateRequest(req, next, schema)
 }
 
 function create(req, res, next) {
+    // media(req,res,function(err) {
+    //     if(err) {
+    //         return res.end("Error uploading file.");
+    //     }    
+    // })
     postService.create(req.body, req.user.id)
         .then(() => res.json({ message: "Post Creation successful"}))
-        .catch(next)
+        .catch(next)    
 }
 
 function updateSchema(req, res, next) {
-    // const schema = Joi.object({
-    //     title: Joi.string(),
-    //     content: Joi.string(),
-    //     categories: Joi.string() //TO DO: add status
-    // })
     const schemaRules = {
         title: Joi.string(),
         content: Joi.string(),

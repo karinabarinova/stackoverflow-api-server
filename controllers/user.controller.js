@@ -5,7 +5,6 @@ const sharp = require('sharp')
 const multer = require('multer')
 const path = require('path')
 const uuid = require('uuidv1')
-const fs = require('fs')
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
         cb(null, 'resources/avatars')
@@ -14,6 +13,7 @@ const storage = multer.diskStorage({
         cb(null, file.fieldname + uuid() + path.extname(file.originalname))
     }
 })
+
 const validateRequest = require('../middleware/validate-request')
 const authorize = require('../middleware/authorize')
 const Role = require('../helpers/role')
@@ -135,7 +135,7 @@ async function getAvatar(req, res, next) {
         userService.getAvatar(req.params.id)
             .then((user) => {
                 res.set('Content-Type', 'image/jpg');
-                res.json(user.avatar)
+                res.sendFile(path.join(__dirname, `../`, user.avatar))
                 // res.send(fs.readFileSync(user.avatar))
             })
             .catch(next)
