@@ -18,7 +18,7 @@ function authorize(roles = []) {
             if (token === null)
                 return res.status(401).json({ message: 'Unauthorized' });
 
-            const validateToken = await db.RefreshToken.findOne({where:{token}})
+            const validateToken = await db.userToken.findOne({where:{token}})
 
             if (validateToken.expires < new Date(Date.now()))
                 return res.status(401).json({ message: 'Unauthorized' });

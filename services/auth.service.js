@@ -25,7 +25,7 @@ async function authenticate({ login, email, password, ipAddress }) {
 
     // authentication successful so generate jwt and token
     const jwtToken = generateJwtToken(user);
-    const tokenRow = new db.RefreshToken({
+    const tokenRow = new db.userToken({
         userId: user.id,
         token: jwtToken,
         expires: new Date(Date.now() + 1*24*60*60*1000), //1 day
@@ -45,6 +45,8 @@ async function register(params, origin) {
         return await sendAlreadyRegisteredEmail(params.email, origin);
     }
     // create account object
+    // console.log(params)
+    // delete params.password
     const user = new db.User(params);
 
     // first registered account is an admin
@@ -190,7 +192,7 @@ async function hash(password) {
 
 async function logOut(id, {token}) {
     console.log(token)
-    const row = await db.RefreshToken.findOne( {where: {UserId: id, token}})
+    const row = await db.userToken.findOne( {where: {UserId: id, token}})
     if (!row)
         throw "Invalid token in cookies"
     row.expires = new Date(Date.now())

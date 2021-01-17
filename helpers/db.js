@@ -15,14 +15,14 @@ async function initialize() {
     //connect to db
     const sequelize = new Sequelize(database, user, password, {dialect: 'mysql'})
     db.User = require('../models/user.model')(sequelize)
-    db.RefreshToken = require('../models/refresh-token.model')(sequelize)
+    db.userToken = require('../models/userToken.model')(sequelize)
     db.Post = require('../models/post.model')(sequelize)
     db.Comment = require('../models/comment.model')(sequelize)
     db.Like = require('../models/like.model')(sequelize)
     db.Category = require('../models/category.model')(sequelize)
     //define relations
-    db.User.hasMany(db.RefreshToken, {onDelete: 'CASCADE', foreignKey: 'userId'})
-    db.RefreshToken.belongsTo(db.User, {
+    db.User.hasMany(db.userToken, {onDelete: 'CASCADE', foreignKey: 'userId'})
+    db.userToken.belongsTo(db.User, {
         foreignKey: 'userId',
         as: "user"
     })

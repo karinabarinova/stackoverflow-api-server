@@ -14,10 +14,6 @@ function model(sequelize) {
             type: DataTypes.STRING,
             allowNull: false
         },
-        password: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
         hash: {
             type: DataTypes.STRING,
             allowNull: false
