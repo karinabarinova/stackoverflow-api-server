@@ -13,7 +13,7 @@ function model(sequelize) {
             }
         },
         title: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(1234),
             allowNull: false
         },
         publish_date: {
@@ -27,7 +27,7 @@ function model(sequelize) {
             defaultValue: 'active'
         },
         content: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(1234),
             allowNull: false
         },
         // categories: {
