@@ -18,7 +18,7 @@ module.exports = {
     lock,
     unlock,
     subscribe,
-    // unsubscribe
+    unsubscribe
 };
 
 async function getAll(query) {
@@ -27,7 +27,7 @@ async function getAll(query) {
     if (order_by !== "id" && order_by !== "createdAt" 
     && order_by !== 'updatedAt' && order_by !== 'rating')
         order_by = "rating"
-        
+
     if (order_direction !== "desc" && order_direction !== "asc")
         order_direction = "desc"
 
@@ -169,9 +169,15 @@ async function subscribe(subscriber, PostId) {
     }
 }
 
-// async function unsubscribe(subscriber, PostId) {
-    
-// }
+async function unsubscribe(subscriber, PostId) {
+    await getPost(PostId)
+    const record = await db.Subcribers.findOne({ where: {userId: subscriber, PostId}})    
+    if (record)
+        await record.destroy();
+    else
+        throw 'You are not subscribed to this post'
+
+}
 
 
 async function getAllComments(PostId) {

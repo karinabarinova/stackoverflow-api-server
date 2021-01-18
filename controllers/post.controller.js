@@ -46,6 +46,7 @@ router.delete('/:id/like', authorize(), deleteLike)
 router.post('/:id/lock', authorize(Role.Admin), lock)
 router.post('/:id/unlock', authorize(Role.Admin), unlock)
 router.post('/:id/subscribe', authorize(), subscribe)
+router.post('/:id/unsubscribe', authorize(), unsubscribe)
 
 
 module.exports = router
@@ -131,6 +132,12 @@ function unlock(req, res, next) {
 function subscribe(req, res, next) {
     postService.subscribe(req.user.id, req.params.id)
         .then(() => res.json({message: "Subscribed successfully"}))
+        .catch(next)
+}
+
+function unsubscribe(req, res, next) {
+    postService.unsubscribe(req.user.id, req.params.id)
+        .then(() => res.json({message: "Unsubscribed successfully"}))
         .catch(next)
 }
 
