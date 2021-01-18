@@ -1,5 +1,6 @@
 
 const bcrypt = require('bcryptjs');
+const db = require('../helpers/db')
 
 module.exports = {
     userInfo,
@@ -79,23 +80,22 @@ async function commentInfo(comment) {
     }
 }
 
-async function likeInfo(like) {
+async function likeInfo(like, comment, post, user) {
     const likes = await like.findAll()
     if (likes.length === 0) {
         const params = [
-            {author: 1, type: "like", PostId: null, CommentId: 1},
-            {author: 2, type: "like", PostId: null, CommentId: 2},
-            {author: 3, type: "like", PostId: null, CommentId: 3},
-            {author: 4, type: "like", PostId: null, CommentId: 4},
-            {author: 1, type: "like", PostId: null, CommentId: 5},
-            {author: 2, type: "like", PostId: null, CommentId: 6},
-            //
             {author: 1, type: "like", PostId: 1, CommentId: null},
             {author: 2, type: "like", PostId: 2, CommentId: null},
             {author: 3, type: "like", PostId: 3, CommentId: null},
             {author: 4, type: "like", PostId: 4, CommentId: null},
             {author: 5, type: "like", PostId: 5, CommentId: null},
             //
+            {author: 1, type: "like", PostId: null, CommentId: 1},
+            {author: 2, type: "like", PostId: null, CommentId: 2},
+            {author: 3, type: "like", PostId: null, CommentId: 3},
+            {author: 4, type: "like", PostId: null, CommentId: 4},
+            {author: 1, type: "like", PostId: null, CommentId: 5},
+            {author: 2, type: "like", PostId: null, CommentId: 6},
             {author: 2, type: "dislike", PostId: null, CommentId: 7},
             {author: 4, type: "dislike", PostId: null, CommentId: 8},
             {author: 2, type: "dislike", PostId: null, CommentId: 9},
@@ -103,12 +103,43 @@ async function likeInfo(like) {
             {author: 2, type: "dislike", PostId: null, CommentId: 11},
         ]
         await like.bulkCreate(params)
-        // for (let i = 0; i < params.length; i++) {
-
-        // }
+        for (let i = 0; i < params.length; i++) {
+            if (i < 5)
+                updateUserRatingPost(params[i].PostId, params[i].type, post, user)
+            else
+                updateUserRatingComment(params[i].CommentId, params[i].type, comment, user)
+        }
     }
 }
 
 async function hash(password) {
     return await bcrypt.hash(password, 10);
+}
+
+async function updateUserRatingPost(postId, likeType, instancePost, instanceUser ) {
+    const post = await instancePost.findOne({ where: {
+        id: postId
+    }})
+    const user = await instanceUser.findByPk(post.author)
+
+    if (likeType === 'like')
+        await user.increment('rating')
+    else 
+        if (user.rating > 0)
+            user.decrement('rating')
+    await user.save()
+}
+
+async function updateUserRatingComment(commentId, likeType, instanceComment, instanceUser) {
+    const comment = await instanceComment.findOne({ where: {
+        id: commentId
+    }})
+    const user = await instanceUser.findByPk(comment.author)
+
+    if (likeType === 'like')
+        user.increment('rating')
+    else 
+        if (user.rating > 0)
+            user.decrement('rating')
+    await user.save()
 }

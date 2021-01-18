@@ -76,5 +76,5 @@ async function initialize() {
     await create.userInfo(db.User)
     await create.postInfo(db.Post, db.Category)
     await create.commentInfo(db.Comment)
-    await create.likeInfo(db.Like)
+    await create.likeInfo(db.Like, db.Comment, db.Post, db.User)
 }
