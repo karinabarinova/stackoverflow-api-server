@@ -101,4 +101,5 @@ My challenge was to create an API for a future question and answer service forpr
 ##licenses:<br/>
 ![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
 
-##profile:
+##Author:<br/>
+Karina Barinova :bowtie:
