@@ -15,7 +15,7 @@ function authorize(roles = []) {
             const authHeader = req.headers['authorization']
             const token = authHeader && authHeader.split(' ')[1]
 
-            if (token === null)
+            if (!token)
                 return res.status(401).json({ message: 'Unauthorized' });
 
             const validateToken = await db.userToken.findOne({where:{token}})
