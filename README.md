@@ -15,8 +15,8 @@ My challenge was to create an API for a future question and answer service forpr
 - CRUD operations for Posts, Comments, Categories, Likes, Subscribers, Users
 
 ##**Authentication module**:<br/>
-- POST - /api/auth/register - registration of a new user, required parameters are [login, password, password confirmation, email]<br/>
-- POST - /api/auth/login - log in user, required parameters are [login, email,password]. Only users with a confirmed email can sign in<br/>
+- [x] POST - /api/auth/register - registration of a new user, required parameters are [login, password, password confirmation, email]<br/>
+- [x] POST - /api/auth/login - log in user, required parameters are [login, email,password]. Only users with a confirmed email can sign in<br/>
 - POST - /api/auth/logout - log out authorized user<br/>
 - POST - /api/auth/password-reset - send a reset link to user email, requiredparameter is [email]<br/>
 - POST - /api/auth/password-reset/<confirm_token> - confirm new password with a token from email, required parameter is a [new password]<br/>
