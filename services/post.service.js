@@ -1,6 +1,8 @@
 const db = require('../helpers/db');
 const { Op } = require('sequelize');
 const paginate = require('../helpers/pagination')
+const sendEmail = require('../helpers/send-email')
+
 module.exports = {
     getAll,
     getById,
@@ -14,7 +16,9 @@ module.exports = {
     getAllLikes,
     deleteLike,
     lock,
-    unlock
+    unlock,
+    subscribe,
+    // unsubscribe
 };
 
 async function getAll(query) {
@@ -126,11 +130,46 @@ async function createComment(author, content, PostId) {
             PostId,
             content
         })
+        const subscribers = await db.Subcribers.findOne({ where: {PostId}})
+        if (subscribers)
+            sendUpdateEmail(subscribers.dataValues, PostId)
     } else {
         throw 'You cannot add comments under inactive posts'
     }
-    
 }
+
+async function sendUpdateEmail(info, postId) {
+    let message = `<p>Follow the link to check the post: <code>/api/posts/${postId}</code></p>`;
+
+    await sendEmail({
+        to: info.email,
+        subject: 'Subscribe USOF API - Post has been updated',
+        html: `<h4>Someone have just updated the post you're subscribed to</h4>
+               <p>Your email <strong>${info.email}</strong> was used to get updates on our platform</p>
+               ${message}`
+    });
+}
+
+async function subscribe(subscriber, PostId) {
+    const post = await getPost(PostId)
+    const user = await db.User.findOne( {where: {id: subscriber}})
+    if (user) {
+        if (post.status === 'active') {
+            await db.Subcribers.create({
+                userId: subscriber,
+                PostId,
+                email: user.email
+            })
+        } else {
+            throw 'You cannot subscribe to inactive posts'
+        }
+    }
+}
+
+// async function unsubscribe(subscriber, PostId) {
+    
+// }
+
 
 async function getAllComments(PostId) {
     await getPost(PostId)

@@ -45,6 +45,7 @@ router.get('/:id/like', authorize(), getAllLikes)
 router.delete('/:id/like', authorize(), deleteLike)
 router.post('/:id/lock', authorize(Role.Admin), lock)
 router.post('/:id/unlock', authorize(Role.Admin), unlock)
+router.post('/:id/subscribe', authorize(), subscribe)
 
 
 module.exports = router
@@ -124,6 +125,12 @@ function lock(req, res, next) {
 function unlock(req, res, next) {
     postService.unlock(req.params.id)
         .then(() => res.json({message: "Post has been unlocked successfully"}))
+        .catch(next)
+}
+
+function subscribe(req, res, next) {
+    postService.subscribe(req.user.id, req.params.id)
+        .then(() => res.json({message: "Subscribed successfully"}))
         .catch(next)
 }
 

@@ -21,6 +21,7 @@ async function initialize() {
     db.Comment = require('../models/comment.model')(sequelize)
     db.Like = require('../models/like.model')(sequelize)
     db.Category = require('../models/category.model')(sequelize)
+    db.Subcribers = require('../models/subscribers.model')(sequelize)
     //define relations
     db.User.hasMany(db.userToken, {onDelete: 'CASCADE', foreignKey: 'userId'})
     db.userToken.belongsTo(db.User, {
@@ -69,6 +70,14 @@ async function initialize() {
         through: "post_category",
         as: "categories",
         foreignKey: "post_id"
+    })
+    db.Post.hasMany(db.Subcribers, {
+        as: 'subscriber',
+        onDelete: 'CASCADE'
+    })
+    db.Subcribers.belongsTo(db.Post, {
+        foreignKey: 'PostId',
+        as: "post"
     })
     
     //sync all models with database

@@ -20,7 +20,7 @@ async function userInfo(user) {
             { login: "anna", email: "anna@gmail.com", fullName: "Anna Norton", role: "User", verified: Date.now(), hash: await hash("secretpass")},
             { login: "fin", email: "fin@gmail.com", fullName: "Fin Norton", role: "User", verified: Date.now(), hash: await hash("secretpass")},
             { login: "jessica", email: "jessica@gmail.com", fullName: "Jessica Norton", role: "User", verified: Date.now(), hash: await hash("secretpass")},
-            { login: "karina", email: "karina@gmail.com", fullName: "Karina Norton", role: "Admin", verified: Date.now(), hash: await hash("secretpass")},
+            { login: "karina", email: "kbarinova11@gmail.com", fullName: "Karina Norton", role: "Admin", verified: Date.now(), hash: await hash("secretpass")},
         ]
         await user.bulkCreate(params)
     }
