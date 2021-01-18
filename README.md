@@ -1,11 +1,8 @@
 # Table of Content
--[description](#description)
+-[description](#description)\n
 -[installation](#installation)
 -[usage](#usage)
 -[licenses](#licenses)
--[contribution](#contribution)
--[test](#test)
--[username](#username)
 -[profile](#profile)
 
 ##description:
@@ -15,11 +12,5 @@
 ##usage:
 
 ##licenses:
-
-##contribution:
-
-##test:
-
-##email:
 
 ##profile:
