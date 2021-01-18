@@ -3,7 +3,8 @@ const bcrypt = require('bcryptjs');
 
 module.exports = {
     userInfo,
-    postInfo
+    postInfo,
+    commentInfo
 }
 
 async function userInfo(user) {
@@ -19,7 +20,7 @@ async function userInfo(user) {
             { login: "jessica", email: "jessica@gmail.com", fullName: "Jessica Norton", role: "User", verified: Date.now(), hash: await hash("secretpass")},
             { login: "karina", email: "karina@gmail.com", fullName: "Karina Norton", role: "Admin", verified: Date.now(), hash: await hash("secretpass")},
         ]
-        user.bulkCreate(params)
+        await user.bulkCreate(params)
     }
 }
 
@@ -51,6 +52,32 @@ async function postInfo(post, dbCategory) {
         }
     }
 }
+
+async function commentInfo(comment) {
+
+    const comments = await comment.findAll()
+    if (comments.length === 0) {
+        const params = [
+            { author: 1, PostId: 1, content: "Good question, I would like to know the answer as well"},
+            { author: 2, PostId: 2, content: "Good question, I would like to know the answer as well"},
+            { author: 3, PostId: 2, content: "Good question, I would like to know the answer as well"},
+            { author: 1, PostId: 3, content: "Good question, I would like to know the answer as well"},
+            { author: 4, PostId: 4, content: "Good question, I would like to know the answer as well"},
+            { author: 2, PostId: 2, content: "According to another stackoverflow post I found they suggest you should use the name used in the db.define('user' not the const name User anyway both crash the same"},
+            { author: 3, PostId: 3, content: "According to another stackoverflow post I found they suggest you should use the name used in the db.define('user' not the const name User anyway both crash the same"},
+            { author: 4, PostId: 4, content: "According to another stackoverflow post I found they suggest you should use the name used in the db.define('user' not the const name User anyway both crash the same"},
+            { author: 1, PostId: 5, content: "According to another stackoverflow post I found they suggest you should use the name used in the db.define('user' not the const name User anyway both crash the same"},
+            { author: 3, PostId: 1, content: "According to another stackoverflow post I found they suggest you should use the name used in the db.define('user' not the const name User anyway both crash the same"},
+            { author: 1, PostId: 3, content: "You can create a span instead a button"},
+            { author: 2, PostId: 4, content: "You can create a span instead a button"},
+            { author: 3, PostId: 5, content: "You can create a span instead a button"},
+            { author: 4, PostId: 1, content: "You can create a span instead a button"},
+            { author: 1, PostId: 2, content: "You can create a span instead a button"}
+        ]
+        await comment.bulkCreate(params)
+    }
+}
+
 async function hash(password) {
     return await bcrypt.hash(password, 10);
 }
