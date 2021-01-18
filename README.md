@@ -99,5 +99,6 @@ My challenge was to create an API for a future question and answer service forpr
     npm v13 and higher<br/>
 ```
 ##licenses:
+![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
 
 ##profile:
