@@ -26,7 +26,8 @@ async function getAll(query) {
     var { order_by, order_direction, fromDate, toDate, status, category } = query
     if (order_by !== "id" && order_by !== "createdAt" 
     && order_by !== 'updatedAt' && order_by !== 'rating')
-        order_by = "rating"//should be number of likes
+        order_by = "rating"
+        
     if (order_direction !== "desc" && order_direction !== "asc")
         order_direction = "desc"
 
@@ -98,7 +99,9 @@ async function update(id, params) {
 
     Object.assign(post, params);
     await post.save();
-
+    const subscribers = await db.Subcribers.findOne({ where: {PostId: id}})
+    if (subscribers)
+        sendUpdateEmail(subscribers.dataValues, PostId)
     return post.get()
 }
 
