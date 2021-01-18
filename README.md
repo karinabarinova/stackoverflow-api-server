@@ -69,38 +69,42 @@ My challenge was to create an API for a future question and answer service forpr
 - Posts_Categories<br/>
 - User Access Tokens<br/>
 
-##installation:
-    > npm install
-##usage:
-    > node server
+#installation:
+```md
+> npm install
+```
+#usage:
+```md
+> node server
+```
 
-##dependencies:
+#dependencies:<br/>
     <!-- "@admin-bro/express": "^3.1.0",
     "@admin-bro/sequelize": "^1.1.2",
     "admin-bro": "^3.3.1",
     "admin-bro-sequelizejs": "^0.5.1", -->
-    "bcryptjs": "^2.4.3",
-    "body-parser": "^1.19.0",
-    "cookie-parser": "^1.4.5",
-    "cors": "^2.8.5",
-    "express": "^4.17.1",
+    "bcryptjs": "^2.4.3",<br/>
+    "body-parser": "^1.19.0",<br/>
+    "cookie-parser": "^1.4.5",<br/>
+    "cors": "^2.8.5",<br/>
+    "express": "^4.17.1",<br/>
     <!-- "express-formidable": "^1.2.0", -->
-    "express-jwt": "^6.0.0",
-    "express-session": "^1.17.1",
-    "joi": "^17.3.0",
-    "jsonwebtoken": "^8.5.1",
-    "multer": "^1.4.2",
-    "mysql2": "^2.2.5",
-    "nodemailer": "^6.4.17",
-    "rootpath": "^0.1.2",
-    "sequelize": "^6.3.5",
+    "express-jwt": "^6.0.0",<br/>
+    "express-session": "^1.17.1",<br/>
+    "joi": "^17.3.0",<br/>
+    "jsonwebtoken": "^8.5.1",<br/>
+    "multer": "^1.4.2",<br/>
+    "mysql2": "^2.2.5",<br/>
+    "nodemailer": "^6.4.17",<br/>
+    "rootpath": "^0.1.2",<br/>
+    "sequelize": "^6.3.5",<br/>
     <!-- "sharp": "^0.27.0", -->
     <!-- "swagger-ui-express": "^4.1.6", -->
     <!-- "tslib": "^2.1.0", -->
-    "uuidv1": "^1.6.14",
+    "uuidv1": "^1.6.14",<br/>
     <!-- "yamljs": "^0.3.0" -->
-    node v13 and higher
-    npm v13 and higher
+    node v13 and higher<br/>
+    npm v13 and higher<br/>
 
 ##licenses:
 
