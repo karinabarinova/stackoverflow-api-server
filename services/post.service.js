@@ -17,15 +17,16 @@ module.exports = {
 
 async function getAll(query) {
     const { q, page, limit} = query
-    var { order_by, order_direction, fromDate, toDate, status } = query
+    var { order_by, order_direction, fromDate, toDate, status, category } = query
     if (order_by !== "id" && order_by !== "createdAt" 
-    && order_by !== 'updatedAt' && order_by !== 'like')
-        order_by = "createdAt"//should be number of likes
+    && order_by !== 'updatedAt' && order_by !== 'rating')
+        order_by = "rating"//should be number of likes
     if (order_direction !== "desc" && order_direction !== "asc")
         order_direction = "desc"
 
     let search = {}
-    let filter = []
+    let filter1 = []
+    let filter2 = []
     let filterStatus = []
     let order = []
 
@@ -43,7 +44,9 @@ async function getAll(query) {
         order.push([order_by, order_direction])
 
     if (fromDate && toDate)
-        filter.push([new Date(fromDate), new Date(toDate)])
+        filter1.push([new Date(fromDate), new Date(toDate)])
+    if (category)
+        filter2.push(["category", category])
 
     if (status && (status === "active" || status === "inactive"))
         filterStatus.push([status])
@@ -52,13 +55,13 @@ async function getAll(query) {
         return posts.map(post => {
             return {
                 title: post.title,
-                content: post.content
-                // categories: post.categories
+                content: post.content,
+                rating: post.rating
             }
         })
     }
 
-    const posts = await paginate(db.Post, page, limit, search, filter, filterStatus, order, transform)
+    const posts = await paginate(db.Post, page, limit, search, filter1, filter2, filterStatus, order, transform)
     return { data: posts} 
 }
 
@@ -152,6 +155,7 @@ async function createLike(params, author, PostId) {
     params.PostId = PostId
     await db.Like.create(params);
     updateUserRating(params.PostId, params.type)
+    updatePostRating(params.postId, params.type)
 }
 
 async function getAllLikes(PostId) {
@@ -191,6 +195,20 @@ async function updateUserRating(postId, likeType) {
         if (user.rating > 0)
             user.decrement('rating')
     await user.save()
+}
+
+async function updatePostRating(postId, likeType) {
+    const post = await db.Post.findOne({ where: {
+        id: postId
+    }})
+    // const user = await db.User.findByPk(post.author)
+
+    if (likeType === 'like')
+        await post.increment('rating')
+    else 
+        if (post.rating > 0)
+            post.decrement('rating')
+    await post.save()
 }
 
 function basicDetails(like) {

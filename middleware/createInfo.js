@@ -89,6 +89,11 @@ async function likeInfo(like, comment, post, user) {
             {author: 3, type: "like", PostId: 3, CommentId: null},
             {author: 4, type: "like", PostId: 4, CommentId: null},
             {author: 5, type: "like", PostId: 5, CommentId: null},
+            {author: 2, type: "like", PostId: 1, CommentId: null},
+            {author: 3, type: "like", PostId: 2, CommentId: null},
+            {author: 4, type: "like", PostId: 3, CommentId: null},
+            {author: 3, type: "like", PostId: 1, CommentId: null},
+
             //
             {author: 1, type: "like", PostId: null, CommentId: 1},
             {author: 2, type: "like", PostId: null, CommentId: 2},
@@ -104,8 +109,10 @@ async function likeInfo(like, comment, post, user) {
         ]
         await like.bulkCreate(params)
         for (let i = 0; i < params.length; i++) {
-            if (i < 5)
+            if (i < 9) {
                 updateUserRatingPost(params[i].PostId, params[i].type, post, user)
+                updatePostRating(params[i].PostId, params[i].type, post)
+            }
             else
                 updateUserRatingComment(params[i].CommentId, params[i].type, comment, user)
         }
@@ -142,4 +149,17 @@ async function updateUserRatingComment(commentId, likeType, instanceComment, ins
         if (user.rating > 0)
             user.decrement('rating')
     await user.save()
+}
+
+async function updatePostRating(postId, likeType, instancePost) {
+    const post = await instancePost.findOne({ where: {
+        id: postId
+    }})
+
+    if (likeType === 'like')
+        await post.increment('rating')
+    else 
+        if (post.rating > 0)
+            post.decrement('rating')
+    await post.save()
 }

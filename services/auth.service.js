@@ -191,7 +191,6 @@ async function hash(password) {
 }
 
 async function logOut(id, {token}) {
-    console.log(token)
     const row = await db.userToken.findOne( {where: {UserId: id, token}})
     if (!row)
         throw "Invalid token in cookies"

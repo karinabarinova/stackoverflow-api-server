@@ -30,16 +30,11 @@ function model(sequelize) {
             type: DataTypes.STRING(1234),
             allowNull: false
         },
-        // categories: {
-        //     type: DataTypes.STRING,
-        //     allowNull: false,
-        //     get() {
-        //         return this.getDataValue('categories').split(';')
-        //     },
-        //     set(value) {
-        //         return this.setDataValue('categories', value)
-        //     }
-        // }
+        rating: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 0
+        }
     }
 
     return sequelize.define('Post', attributes, {})

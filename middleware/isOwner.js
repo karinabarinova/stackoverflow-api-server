@@ -6,7 +6,6 @@ module.exports = { post, comment, likeComment };
 function post() {
     return [
         async (req, res, next) => {
-            console.log(req.user)
             const post = await db.Post.findByPk(req.params.id);
             if (!post || post === null)
                 return res.status(404).json({ message: 'Post Not Found' })

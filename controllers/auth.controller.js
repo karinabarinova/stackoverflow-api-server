@@ -30,7 +30,6 @@ function authenticate(req, res, next) {
     const ipAddress = req.ip;
     authService.authenticate({login, email, password, ipAddress })
         .then(({...user }) => {
-            // console.log(user)
             setTokenCookie(res, user.jwtToken);
             res.json(user);
         })
