@@ -99,9 +99,11 @@ async function update(id, params) {
 
     Object.assign(post, params);
     await post.save();
-    const subscribers = await db.Subcribers.findOne({ where: {PostId: id}})
-    if (subscribers)
-        sendUpdateEmail(subscribers.dataValues, PostId)
+    const subscribers = await db.Subcribers.findAll({ where: {PostId: id}})
+    if (subscribers) {
+        for (user of subscribers)
+            sendUpdateEmail(user.dataValues, id)
+    }
     return post.get()
 }
 
@@ -133,9 +135,11 @@ async function createComment(author, content, PostId) {
             PostId,
             content
         })
-        const subscribers = await db.Subcribers.findOne({ where: {PostId}})
-        if (subscribers)
-            sendUpdateEmail(subscribers.dataValues, PostId)
+        const subscribers = await db.Subcribers.findAll({ where: {PostId}})
+        if (subscribers) {
+            for (user of subscribers)
+                sendUpdateEmail(user.dataValues, PostId)
+        }
     } else {
         throw 'You cannot add comments under inactive posts'
     }
