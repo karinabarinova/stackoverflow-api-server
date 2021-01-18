@@ -79,16 +79,12 @@ My challenge was to create an API for a future question and answer service forpr
 ```
 
 #dependencies:<br/>
-    <!-- "@admin-bro/express": "^3.1.0",
-    "@admin-bro/sequelize": "^1.1.2",
-    "admin-bro": "^3.3.1",
-    "admin-bro-sequelizejs": "^0.5.1", -->
+```md
     "bcryptjs": "^2.4.3",<br/>
     "body-parser": "^1.19.0",<br/>
     "cookie-parser": "^1.4.5",<br/>
     "cors": "^2.8.5",<br/>
     "express": "^4.17.1",<br/>
-    <!-- "express-formidable": "^1.2.0", -->
     "express-jwt": "^6.0.0",<br/>
     "express-session": "^1.17.1",<br/>
     "joi": "^17.3.0",<br/>
@@ -98,14 +94,10 @@ My challenge was to create an API for a future question and answer service forpr
     "nodemailer": "^6.4.17",<br/>
     "rootpath": "^0.1.2",<br/>
     "sequelize": "^6.3.5",<br/>
-    <!-- "sharp": "^0.27.0", -->
-    <!-- "swagger-ui-express": "^4.1.6", -->
-    <!-- "tslib": "^2.1.0", -->
     "uuidv1": "^1.6.14",<br/>
-    <!-- "yamljs": "^0.3.0" -->
     node v13 and higher<br/>
     npm v13 and higher<br/>
-
+```
 ##licenses:
 
 ##profile:
