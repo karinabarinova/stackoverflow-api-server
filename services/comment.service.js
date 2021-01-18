@@ -16,7 +16,6 @@ async function getById(id) {
 }
 
 async function getAllLikes(CommentId) {
-
     await getComment(CommentId)
     const likes = await db.Like.findAll({ where: {
         CommentId,   

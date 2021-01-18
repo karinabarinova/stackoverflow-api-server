@@ -4,7 +4,8 @@ const bcrypt = require('bcryptjs');
 module.exports = {
     userInfo,
     postInfo,
-    commentInfo
+    commentInfo,
+    likeInfo
 }
 
 async function userInfo(user) {
@@ -75,6 +76,36 @@ async function commentInfo(comment) {
             { author: 1, PostId: 2, content: "You can create a span instead a button"}
         ]
         await comment.bulkCreate(params)
+    }
+}
+
+async function likeInfo(like) {
+    const likes = await like.findAll()
+    if (likes.length === 0) {
+        const params = [
+            {author: 1, type: "like", PostId: null, CommentId: 1},
+            {author: 2, type: "like", PostId: null, CommentId: 2},
+            {author: 3, type: "like", PostId: null, CommentId: 3},
+            {author: 4, type: "like", PostId: null, CommentId: 4},
+            {author: 1, type: "like", PostId: null, CommentId: 5},
+            {author: 2, type: "like", PostId: null, CommentId: 6},
+            //
+            {author: 1, type: "like", PostId: 1, CommentId: null},
+            {author: 2, type: "like", PostId: 2, CommentId: null},
+            {author: 3, type: "like", PostId: 3, CommentId: null},
+            {author: 4, type: "like", PostId: 4, CommentId: null},
+            {author: 5, type: "like", PostId: 5, CommentId: null},
+            //
+            {author: 2, type: "dislike", PostId: null, CommentId: 7},
+            {author: 4, type: "dislike", PostId: null, CommentId: 8},
+            {author: 2, type: "dislike", PostId: null, CommentId: 9},
+            {author: 1, type: "dislike", PostId: null, CommentId: 10},
+            {author: 2, type: "dislike", PostId: null, CommentId: 11},
+        ]
+        await like.bulkCreate(params)
+        // for (let i = 0; i < params.length; i++) {
+
+        // }
     }
 }
 

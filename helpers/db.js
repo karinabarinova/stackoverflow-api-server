@@ -56,7 +56,7 @@ async function initialize() {
         as: 'likes',
         onDelete: 'CASCADE'
     })
-    db.Like.belongsTo(db.Post, { 
+    db.Like.belongsTo(db.Comment, { 
         foreignKey: 'CommentId',
         as: "comment"
     })
@@ -76,4 +76,5 @@ async function initialize() {
     await create.userInfo(db.User)
     await create.postInfo(db.Post, db.Category)
     await create.commentInfo(db.Comment)
+    await create.likeInfo(db.Like)
 }
