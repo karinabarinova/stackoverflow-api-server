@@ -23,9 +23,8 @@ async function userInfo(user) {
     }
 }
 
-async function postInfo(post) {
-    //check if users empty
-
+async function postInfo(post, dbCategory) {
+    //check if posts empty
     const posts = await post.findAll()
     if (posts.length === 0) {
         var params = [
@@ -35,10 +34,23 @@ async function postInfo(post) {
             { title: "How do I return the dataframe from a function in Python?", author: 4, status: "active", content: "x is my dataframe name.I pass it to dataDct , which is a dictionary, as a key. This returns me the dataframe when i don't use this function and just type the dataframe name manually. This dictionary is not declared inside the function."},
             { title: "Create post reaction using jQuery", author: 5, status: "active", content: "I'm trying to generate a jQuery code with post review functionality. What I want to create looks like the image below"},
         ]
-        post.bulkCreate(params)
+        var categories = ["DOM HTML", "Animation", "Javascript DOM", "Python", "Javascript DOM HTML"]
+        await post.bulkCreate(params)
+        for(let i = 1; i <= categories.length; i++) {
+            var p = await post.findOne({ where: {id: i}})
+            var category = categories[i - 1].split(" ")
+            for (c of category) {
+                var categoryExists = await dbCategory.findOne({ where: { title: c}})
+                if (categoryExists)
+                    await categoryExists.addPost(p)
+                else {
+                    var newCategory = await dbCategory.create({title: c})
+                    await newCategory.addPost(p)
+                }
+            }
+        }
     }
 }
-
 async function hash(password) {
     return await bcrypt.hash(password, 10);
 }

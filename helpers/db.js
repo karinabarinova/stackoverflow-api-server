@@ -74,6 +74,5 @@ async function initialize() {
     //sync all models with database
     await sequelize.sync()
     await create.userInfo(db.User)
-    await create.postInfo(db.Post)
-
+    await create.postInfo(db.Post, db.Category)
 }
