@@ -29,7 +29,8 @@ function model(sequelize) {
                 model: "Posts",
                 key: "Id"
             }
-        }
+        },
+        lock_expires: { type: DataTypes.DATE }
     }
 
     return sequelize.define('Comment', attributes, {})

@@ -43,6 +43,9 @@ router.get('/:id/comments', getAllComments)
 router.post('/:id/like', authorize(), createLikeSchema, createLike)
 router.get('/:id/like', authorize(), getAllLikes)
 router.delete('/:id/like', authorize(), deleteLike)
+router.post('/:id/lock', authorize(Role.Admin), lock)
+router.post('/:id/unlock', authorize(Role.Admin), unlock)
+
 
 module.exports = router
 
@@ -86,11 +89,6 @@ function createSchema(req, res, next) {
 }
 
 function create(req, res, next) {
-    // media(req,res,function(err) {
-    //     if(err) {
-    //         return res.end("Error uploading file.");
-    //     }    
-    // })
     postService.create(req.body, req.user.id)
         .then(() => res.json({ message: "Post Creation successful"}))
         .catch(next)    
@@ -114,6 +112,18 @@ function updateSchema(req, res, next) {
 function update(req, res, next) {
     postService.update(req.params.id, req.body)
         .then(post => res.json(post))
+        .catch(next)
+}
+
+function lock(req, res, next) {
+    postService.lock(req.params.id)
+        .then(() => res.json({message: "Post has been locked successfully"}))
+        .catch(next)
+}
+
+function unlock(req, res, next) {
+    postService.unlock(req.params.id)
+        .then(() => res.json({message: "Post has been unlocked successfully"}))
         .catch(next)
 }
 

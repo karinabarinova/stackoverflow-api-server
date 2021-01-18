@@ -34,7 +34,8 @@ function model(sequelize) {
             type: DataTypes.INTEGER,
             allowNull: false,
             defaultValue: 0
-        }
+        },
+        lock_expires: { type: DataTypes.DATE }
     }
 
     return sequelize.define('Post', attributes, {})

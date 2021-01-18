@@ -5,6 +5,7 @@ const validateRequest = require('../middleware/validate-request')
 const authorize = require('../middleware/authorize')
 const isOwner = require('../middleware/isOwner')
 const commentService = require('../services/comment.service')
+const Role = require('../helpers/role')
 
 module.exports = router
 //routers
@@ -14,6 +15,8 @@ router.delete('/:id', authorize(), isOwner.comment(), _delete)
 router.post('/:id/like', authorize(), createLikeSchema, createLike)
 router.get('/:id/like', authorize(), getAllLikes)
 router.delete('/:id/like', authorize(), isOwner.likeComment(), deleteLike)
+router.post('/:id/lock', authorize(Role.Admin), lock)
+router.post('/:id/unlock', authorize(Role.Admin), unlock)
 
 function getById(req, res, next) {
     commentService.getById(req.params.id)
@@ -25,6 +28,18 @@ function getAllLikes(req, res, next) {
     commentService.getAllLikes(req.params.id)
         .then(likes => res.json(likes))
         .catch(next);
+}
+
+function lock(req, res, next) {
+    commentService.lock(req.params.id)
+        .then(() => res.json({message: "Comment has been locked successfully"}))
+        .catch(next)
+}
+
+function unlock(req, res, next) {
+    commentService.unlock(req.params.id)
+        .then(() => res.json({message: "Comment has been unlocked successfully"}))
+        .catch(next)
 }
 
 function _delete(req, res, next) {

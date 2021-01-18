@@ -32,11 +32,9 @@ const paginate = async (model, pageSize, pageLimit, search = {}, filter1 = {}, f
         if (Object.keys(search).length)
             options = {options, ...search}
 
-        // if (order && order.length && order[0][0] === 'like')
         if (order && order.length)
             options['order'] = order
 
-        console.log(options)
         let {count, rows} = await model.findAndCountAll(options)
 
         if (transform && typeof transform === 'function')

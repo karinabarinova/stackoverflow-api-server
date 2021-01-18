@@ -7,7 +7,9 @@ module.exports = {
     delete: _delete,
     deleteLike,
     createLike,
-    getAllLikes
+    getAllLikes,
+    lock,
+    unlock
 };
 
 
@@ -32,6 +34,8 @@ async function getAllLikes(CommentId) {
 
 async function _delete(id) {
     const comment = await getComment(id);
+    if (comment.lock_expires > new Date(Date.now()))
+        throw "You cannot delete the locked comment"
     await comment.destroy();
 }
 
@@ -46,6 +50,9 @@ async function deleteLike(id) {
 
 async function update(id, params) {
     const comment = await getComment(id);
+
+    if (comment.lock_expires > new Date(Date.now()))
+        throw "This comment is locked. Please contact admins to unlock it"
 
     Object.assign(comment, params);
     await comment.save();
@@ -65,6 +72,22 @@ async function createLike(params, author, CommentId) {
     params.CommentId = CommentId
     await db.Like.create(params);
     updateUserRating(params.CommentId, params.type) //??
+}
+
+async function lock(CommentId) {
+    const comment = await getComment(CommentId)
+    if (comment.lock_expires > new Date(Date.now()))
+        throw "You cannot lock the locked comment again"
+    comment.lock_expires = new Date(Date.now() + 3*24*60*60*1000) //3 days
+    await comment.save()
+}
+
+async function unlock(CommentId) {
+    const comment = await getComment(CommentId)
+    if (!(comment.lock_expires > new Date(Date.now())))
+        throw "This comment is not locked"
+    comment.lock_expires = null //3 days
+    await comment.save()
 }
 
 //helper function

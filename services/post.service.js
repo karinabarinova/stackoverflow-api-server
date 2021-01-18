@@ -12,7 +12,9 @@ module.exports = {
     getAllCategories,
     createLike,
     getAllLikes,
-    deleteLike
+    deleteLike,
+    lock,
+    unlock
 };
 
 async function getAll(query) {
@@ -87,6 +89,8 @@ async function create(params, author) {
 
 async function update(id, params) {
     const post = await getPost(id);
+    if (post.lock_expires > new Date(Date.now()))
+        throw "This post is locked. Please contact Admin to unlock it"
 
     Object.assign(post, params);
     await post.save();
@@ -96,6 +100,9 @@ async function update(id, params) {
 
 async function _delete(id) {
     const post = await getPost(id);
+    if (post.lock_expires > new Date(Date.now()))
+        throw "You cannot delete locked post. Please contact Admin to unlock it"
+
     await post.destroy();
 }
 
@@ -111,6 +118,8 @@ async function deleteLike(id) {
 
 async function createComment(author, content, PostId) {
     const post = await getPost(PostId)
+    if (post.lock_expires > new Date(Date.now()))
+        throw "You cannot add comments to locked posts"
     if (post.status === 'active') {
         await db.Comment.create({
             author,
@@ -175,6 +184,22 @@ async function getAllLikes(PostId) {
     }
     return likes
 }
+
+async function lock(PostId) {
+    const post = await getPost(PostId)
+    if (post.lock_expires > new Date(Date.now()))
+        throw "You cannot lock the locked post again"
+    post.lock_expires = new Date(Date.now() + 3*24*60*60*1000) //3 days
+    await post.save()
+}
+
+async function unlock(PostId) {
+    const post = await getPost(PostId)
+    if (!(post.lock_expires > new Date(Date.now())))
+        throw "This post is not locked"
+    post.lock_expires = null //3 days
+    await post.save()
+}
 // helper functions
 
 async function getPost(id) {
@@ -201,7 +226,6 @@ async function updatePostRating(postId, likeType) {
     const post = await db.Post.findOne({ where: {
         id: postId
     }})
-    // const user = await db.User.findByPk(post.author)
 
     if (likeType === 'like')
         await post.increment('rating')
