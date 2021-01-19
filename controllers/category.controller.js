@@ -12,9 +12,9 @@ module.exports = router
 router.get('/', authorize(Role.Admin), getAll)
 router.get('/:id', authorize(Role.Admin), getById)
 router.get('/:id/posts', authorize(Role.Admin), getAllPosts)
-router.post('/', authorize(Role.Admin), createSchema, create)//?//only for admins
-router.patch('/:id', authorize(Role.Admin), updateSchema, update)//only for admins
-router.delete('/:id', authorize(Role.Admin), _delete)//only for admins
+router.post('/', authorize(Role.Admin), createSchema, create)
+router.patch('/:id', authorize(Role.Admin), updateSchema, update)
+router.delete('/:id', authorize(Role.Admin), _delete)
 
 function getAll(req, res, next) {
     categoryService.getAll()
@@ -30,7 +30,7 @@ function getById(req, res, next) {
 
 function getAllPosts(req, res, next) {
     categoryService.getAllPosts(req.params.id)
-        .then(category => res.json(category))
+        .then(posts => res.json(posts))
         .catch(next);
 }
 
@@ -44,7 +44,7 @@ function createSchema(req, res, next) {
 
 function create(req, res, next) {
     categoryService.create(req.body)
-        .then(() => res.json({ message: "Category Creation successful"}))
+        .then((category) => res.json({ message: "Category Creation successful", category}))
         .catch(next)
 }
 
@@ -58,7 +58,7 @@ function updateSchema(req, res, next) {
 
 function update(req, res, next) {
     categoryService.update(req.body, req.params.id)
-        .then((category) => res.json(category))
+        .then((category) => res.json({ message: "Category updated successfully", category}))
         .catch(next)
 }
 

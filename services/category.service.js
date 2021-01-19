@@ -34,11 +34,10 @@ async function getAllPosts(id) {
 }
 
 async function create(params) {
-    const exists = db.Category.findOne({ where: {title: params.title}})
+    const exists = await db.Category.findOne({ where: {title: params.title}})
     if (exists)
         throw 'Category already exists'
-    await db.Category.create(params);
-
+    return await db.Category.create(params);
 }
 
 async function update(params, id) {
