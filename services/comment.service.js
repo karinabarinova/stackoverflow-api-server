@@ -64,7 +64,7 @@ async function createLike(params, author, CommentId) {
     await getComment(CommentId);
     //check if like/dislike already is in the table
 
-    if (await db.Like.findOne({ where: { author, type: params.type } })) {
+    if (await db.Like.findOne({ where: { author, type: params.type, CommentId } })) {
         throw  `You cannot ${params.type} this comment again`;
     }
 
