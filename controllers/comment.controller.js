@@ -63,7 +63,7 @@ function updateSchema(req, res, next) {
 
 function update(req, res, next) {
     commentService.update(req.params.id, req.body)
-        .then(post => res.json(post))
+        .then(post => res.json({ message: 'Comment updated successfully', post }))
         .catch(next)
 }
 
@@ -76,6 +76,6 @@ function createLikeSchema(req, res, next) {
 
 function createLike(req, res, next) {
     commentService.createLike(req.body, req.user.id, req.params.id)
-        .then(() => res.json({ message: "Like Creation successful"}))
+        .then((like) => res.json({ message: "Like Creation successful", like}))
         .catch(next)
 }

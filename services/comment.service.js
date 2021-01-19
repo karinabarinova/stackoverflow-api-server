@@ -70,8 +70,9 @@ async function createLike(params, author, CommentId) {
 
     params.author = author;
     params.CommentId = CommentId
-    await db.Like.create(params);
-    updateUserRating(params.CommentId, params.type) //??
+    const like = await db.Like.create(params);
+    updateUserRating(params.CommentId, params.type)
+    return like
 }
 
 async function lock(CommentId) {
