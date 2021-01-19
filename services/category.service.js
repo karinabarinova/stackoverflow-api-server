@@ -41,6 +41,9 @@ async function create(params) {
 }
 
 async function update(params, id) {
+    const exists = await db.Category.findOne({ where: {title: params.title}})
+    if (exists)
+        throw 'Category already exists'
     const category = await getCategory(id);
 
     Object.assign(category, params);

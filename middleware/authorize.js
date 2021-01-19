@@ -32,7 +32,7 @@ function authorize(roles = []) {
             jwt.verify(token, secret, async (err, user) => {
 
                 if (err)
-                    return res.status(403).json({ message: 'Invalid Token' })
+                    return res.status(403).json({ message: 'Invalid Token' })//token has expired
                 
                 const dbUser = await db.User.findOne({ where: { id: user.id }})
 

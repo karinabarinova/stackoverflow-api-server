@@ -40,6 +40,8 @@ function likeComment() {
             const like = await db.Like.findOne( { where: {
                     CommentId: comment.id
             }} );
+            if (!like)
+                return res.status(400).json({ message: 'There is nothing to delete' });
             if (Number(like.author) !== req.user.id && req.user.role != Role.Admin) {
                 return res.status(401).json({ message: 'Unauthorized' });
             }
@@ -57,6 +59,8 @@ function likePost() {
             const like = await db.Like.findOne( { where: {
                     PostId: post.id
             }} );
+            if (!like)
+                return res.status(400).json({ message: 'There is nothing to delete' });
             if (Number(like.author) !== req.user.id && req.user.role != Role.Admin) {
                 return res.status(401).json({ message: 'Unauthorized' });
             }

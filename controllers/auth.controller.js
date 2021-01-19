@@ -45,8 +45,8 @@ function registerSchema(req, res, next) {
         repeat_password: Joi.any().equal(Joi.ref('password'))
             .required()
             .label('Confirm password')
-            .options({ messages: { 'any.only': '{{#label}} does not match'} }),
-        role: Joi.string().valid(Role.Admin, Role.User).required()
+            .options({ messages: { 'any.only': '{{#label}} does not match'} })
+        // role: Joi.string().valid(Role.Admin, Role.User).required()
     })
     validateRequest(req, next, schema)
 }

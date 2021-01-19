@@ -92,10 +92,10 @@ function update(req, res, next) {
 
 function createSchema(req, res, next) {
     const schema = Joi.object({
-        login: Joi.string().empty(''),
-        email: Joi.string().email(),
-        fullName: Joi.string().regex(/^[A-Z]+ [A-Z]+$/i).uppercase(),
-        password: Joi.string().min(7).empty(''),
+        login: Joi.string().empty('').required(),
+        email: Joi.string().email().required(),
+        fullName: Joi.string().regex(/^[A-Z]+ [A-Z]+$/i).uppercase().required(),
+        password: Joi.string().min(7).empty('').required(),
         repeat_password: Joi.any().equal(Joi.ref('password'))
             .required()
             .label('Confirm password')

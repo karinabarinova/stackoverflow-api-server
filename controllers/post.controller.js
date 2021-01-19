@@ -127,7 +127,7 @@ function _delete(req, res, next) {
 }
 
 function deleteLike(req, res, next) {
-    postService.deleteLike(req.params.id)
+    postService.deleteLike(req.params.id, req.user.id)
         .then(() => res.json({message: 'Like deleted successfully'}))
         .catch(next)
 }

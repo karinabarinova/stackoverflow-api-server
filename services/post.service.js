@@ -118,11 +118,14 @@ async function _delete(id) {
     await post.destroy();
 }
 
-async function deleteLike(id) {
-    await getPost(id)
+async function deleteLike(id, user) {
     const like = await db.Like.findOne( { where: {
-        PostId: id
+        PostId: id,
+        author: user
     }} );
+
+    if (!like)
+        throw 'There is nothing to delete'
     likeTypeToRemove = like.type === 'like' ? 'dislike' : 'like'
     await like.destroy();
     updateUserRating(id, likeTypeToRemove)
@@ -166,6 +169,9 @@ async function subscribe(subscriber, PostId) {
     const user = await db.User.findOne( {where: {id: subscriber}})
     if (user) {
         if (post.status === 'active') {
+            const exists = await db.Subcribers.findOne( {where: { userId: subscriber, PostId}})
+            if (exists)
+                throw 'You are already subscribed to this post'
             await db.Subcribers.create({
                 userId: subscriber,
                 PostId,
