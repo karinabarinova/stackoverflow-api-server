@@ -3,7 +3,7 @@
 
 ##description:
 
-My challenge was to create an API for a future question and answer service forprofessional and enthusiast programmers. It allows to share your problems/solutions with short posts and receive solutions/feedback, or even increase your profile rating.
+My challenge was to create an API for a future question and answer service for professional and enthusiast programmers. It allows to share your problems/solutions with short posts and receive solutions/feedback, or even increase one's profile rating.
 
 ###**During the challenge I implemented**:<br/>
 
@@ -11,7 +11,7 @@ My challenge was to create an API for a future question and answer service forpr
 - User Authentication
 - User Registration
 - User Login, Logout options
-- Option to reset password and verify user email
+- Functionality to reset password and verify user email
 - CRUD operations for Posts, Comments, Categories, Likes, Subscribers, Users
 
 ##**Authentication module**:<br/>
@@ -41,6 +41,10 @@ My challenge was to create an API for a future question and answer service forpr
 - [x] PATCH - /api/posts/<post_id> - update the specified post (its title, body orcategory). It's accessible only for the creator of the post<br/>
 - [x] DELETE - /api/posts/<post_id> - delete a post<br/>
 - [x] DELETE - /api/posts/<post_id>/like - delete a like under a post<br/>
+- [x] POST - /api/posts/<post_id>/lock - Lock a post. Available only for admins<br/>
+- [x] POST - /api/posts/<post_id>/unlock - Unlock a post. Available only for admins<br/>
+- [x] POST - /api/posts/<post_id>/subscribe - Subscribe to post.<br/>
+- [x] POST - /api/posts/<post_id>/unsubscribe - Unsubscribe from post.<br/>
 
 ##**Categories module**:<br/>
 - [x] GET - /api/categories- get all categories<br/>
@@ -69,12 +73,16 @@ My challenge was to create an API for a future question and answer service forpr
 - Posts_Categories<br/>
 - User Access Tokens<br/>
 
+#Future plans
+- Limit User access to inactive posts so that user can see only their own inactive posts
+- Favourites: add functionality to add posts to list of favourites
+
 #installation:
 ```md
 > npm install
 > mysql -u root
 > CREATE USER kbarinova@localhost IDENTIFIED BY 'swagswag69-69';
-> GRANT ALL PRIVILEGES ON * . * TO kbarinova@localhost
+> GRANT ALL PRIVILEGES ON * . * TO kbarinova@localhost;
 
 ```
 #usage:
