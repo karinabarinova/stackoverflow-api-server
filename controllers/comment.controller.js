@@ -10,7 +10,7 @@ const Role = require('../helpers/role')
 module.exports = router
 //routers
 router.get('/:id', getById)
-router.patch('/:id', authorize(), updateSchema, update)
+router.patch('/:id', authorize(), isOwner.comment(), updateSchema, update)
 router.delete('/:id', authorize(), isOwner.comment(), _delete)
 router.post('/:id/like', authorize(), createLikeSchema, createLike)
 router.get('/:id/like', authorize(), getAllLikes)

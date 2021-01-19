@@ -90,7 +90,7 @@ async function getAvatar(userId) {
     if (!user)
         throw 'User not found'
     if (!user.avatar)
-        throw 'No avatar provided'
+        throw 'Avatar not found'
     return user
 }
 

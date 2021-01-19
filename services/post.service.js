@@ -226,7 +226,7 @@ async function createLike(params, author, PostId) {
     params.PostId = PostId
     const like = await db.Like.create(params);
     updateUserRating(params.PostId, params.type)
-    updatePostRating(params.postId, params.type)
+    updatePostRating(params.PostId, params.type)
     return like
 }
 
