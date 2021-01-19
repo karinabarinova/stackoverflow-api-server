@@ -107,6 +107,6 @@ async function hash(password) {
 }
 
 function basicDetails(user) {
-    const { id, login, email, role, created, updated, isVerified } = user;
-    return { id, login, email, role, created, updated, isVerified };
+    const { id, login, email, role, created } = user;
+    return { id, login, email, role, created };
 }
