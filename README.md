@@ -72,6 +72,10 @@ My challenge was to create an API for a future question and answer service forpr
 #installation:
 ```md
 > npm install
+> mysql -u root
+> CREATE USER kbarinova@localhost IDENTIFIED BY 'swagswag69-69';
+> GRANT ALL PRIVILEGES ON * . * TO kbarinova@localhost
+
 ```
 #usage:
 ```md
