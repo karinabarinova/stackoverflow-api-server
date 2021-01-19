@@ -71,7 +71,7 @@ function createSchema(req, res, next) {
 
 function create(req, res, next) {
     postService.create(req.body, req.user.id)
-        .then(() => res.json({ message: "Post Creation successful"}))
+        .then((post) => res.json({ message: "Post Creation successful", post}))
         .catch(next)    
 }
 
@@ -92,7 +92,7 @@ function updateSchema(req, res, next) {
 
 function update(req, res, next) {
     postService.update(req.params.id, req.body)
-        .then(post => res.json(post))
+        .then(post => res.json({ message: "Post updated successfully", post }))
         .catch(next)
 }
 
@@ -154,6 +154,6 @@ function createLikeSchema(req, res, next) {
 
 function createLike(req, res, next) {
     postService.createLike(req.body, req.user.id, req.params.id)
-        .then(() => res.json({ message: "Like Creation successful"}))
+        .then((like) => res.json({ message: "Like Creation successful", like}))
         .catch(next)
 }

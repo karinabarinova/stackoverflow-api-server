@@ -92,7 +92,7 @@ async function create(params, author) {
             await newCategory.addPost(post)
         }
     }
-    
+    return post
 }
 
 async function update(id, params) {
@@ -210,7 +210,6 @@ async function getAllCategories(PostId) {
 }
 
 async function createLike(params, author, PostId) {
-    console.log(author)
     await getPost(PostId)
     //check if like/dislike already is in the table
     if (await db.Like.findOne({ where: { author, type: params.type, PostId } })) {
@@ -219,9 +218,10 @@ async function createLike(params, author, PostId) {
 
     params.author = author;
     params.PostId = PostId
-    await db.Like.create(params);
+    const like = await db.Like.create(params);
     updateUserRating(params.PostId, params.type)
     updatePostRating(params.postId, params.type)
+    return like
 }
 
 async function getAllLikes(PostId) {
