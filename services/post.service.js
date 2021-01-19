@@ -21,7 +21,7 @@ module.exports = {
     unsubscribe
 };
 
-async function getAll(query) {
+async function getAll(query, id) {
     const { q, page, limit} = query
     var { order_by, order_direction, fromDate, toDate, status, category } = query
     if (order_by !== "id" && order_by !== "createdAt" 
@@ -68,7 +68,7 @@ async function getAll(query) {
         })
     }
 
-    const posts = await paginate(db.Post, page, limit, search, filter1, filter2, filterStatus, order, transform)
+    const posts = await paginate(db.Post, page, limit, search, filter1, filter2, filterStatus, order, id, transform)
     return { data: posts} 
 }
 
@@ -78,8 +78,11 @@ async function getById(id) {
 
 async function create(params, author) {
     params.author = author;
+    if (!params.content || !params.title)
+        throw "Please provide post title and content"
+
     const post = await db.Post.create(params);
-    const categories = params.categories.split(" ")
+    const categories = params.categories ? params.categories.split(" ") : ""
     for (var category of categories) {
         var categoryExists = await db.Category.findOne({ where: { title: category}})
         if (categoryExists)
@@ -130,7 +133,7 @@ async function createComment(author, content, PostId) {
     if (post.lock_expires > new Date(Date.now()))
         throw "You cannot add comments to locked posts"
     if (post.status === 'active') {
-        await db.Comment.create({
+        const comment = await db.Comment.create({
             author,
             PostId,
             content
@@ -140,6 +143,7 @@ async function createComment(author, content, PostId) {
             for (user of subscribers)
                 sendUpdateEmail(user.dataValues, PostId)
         }
+        return comment
     } else {
         throw 'You cannot add comments under inactive posts'
     }
@@ -206,9 +210,10 @@ async function getAllCategories(PostId) {
 }
 
 async function createLike(params, author, PostId) {
+    console.log(author)
     await getPost(PostId)
     //check if like/dislike already is in the table
-    if (await db.Like.findOne({ where: { author, type: params.type } })) {
+    if (await db.Like.findOne({ where: { author, type: params.type, PostId } })) {
         throw `You cannot ${params.type} this post again`;
     }
 

@@ -10,39 +10,18 @@ const isOwner = require('../middleware/isOwner')
 const postService = require('../services/post.service')
 const Role = require('../helpers/role')
 
-// const storage = multer.diskStorage({
-//     destination: function(req, file, cb) {
-//         cb(null, 'resources/media')
-//     },
-//     filename: function(req, file, cb) {
-//         cb(null, file.fieldname + uuid() + path.extname(file.originalname))
-//     }
-// })
-// const media = multer( {
-//     storage: storage,
-//     dest: 'resources/media',
-//     limits: {
-//         fileSize: 1000000
-//     },
-//     fileFilter(req, file, cb) {
-//         if (!file.originalname.match(/\.(jpg|jpeg|png)$/))
-//             return cb(new Error('Please upload an image'))
-//         cb(undefined, true)
-//     }
-// }).single('media')
-
 //routes
-router.get('/', getAll) //public TO DO: Add pagination
+router.get('/', authorize(["guest", Role.Admin, Role.User]), getAll) //public TO DO: Add pagination
 router.get('/:id', getById)
 router.get('/:id/categories', getAllCategories)
 router.post('/', authorize(), createSchema, create)
 router.patch('/:id', authorize(), isOwner.post(), updateSchema, update)
-router.delete('/:id', authorize(), _delete)
+router.delete('/:id', authorize(), isOwner.post(), _delete)
 router.post('/:id/comments', authorize(), createCommentSchema, createComment)
 router.get('/:id/comments', getAllComments)
 router.post('/:id/like', authorize(), createLikeSchema, createLike)
 router.get('/:id/like', authorize(), getAllLikes)
-router.delete('/:id/like', authorize(), deleteLike)
+router.delete('/:id/like', authorize(), isOwner.likePost(), deleteLike)
 router.post('/:id/lock', authorize(Role.Admin), lock)
 router.post('/:id/unlock', authorize(Role.Admin), unlock)
 router.post('/:id/subscribe', authorize(), subscribe)
@@ -52,7 +31,7 @@ router.post('/:id/unsubscribe', authorize(), unsubscribe)
 module.exports = router
 
 function getAll(req, res, next) {
-    postService.getAll(req.query)
+    postService.getAll(req.query, req.user.id)
         .then(posts => res.json(posts))
         .catch(next);
 }
@@ -162,7 +141,7 @@ function createCommentSchema(req, res, next) {
 
 function createComment(req, res, next) {
     postService.createComment(req.user.id, req.body.content, req.params.id)
-        .then((post) => res.json(post))
+        .then((comment) => res.json(comment))
         .catch(next)
 }
 

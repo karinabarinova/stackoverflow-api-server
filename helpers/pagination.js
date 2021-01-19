@@ -1,8 +1,8 @@
-const { Op } = require('sequelize')
+const { Op, Sequelize } = require('sequelize')
 const db = require('../helpers/db');
 
 
-const paginate = async (model, pageSize, pageLimit, search = {}, filter1 = {}, filter2 = {}, filterStatus = {}, order = {}, transform) => {
+const paginate = async (model, pageSize, pageLimit, search = {}, filter1 = {}, filter2 = {}, filterStatus = {}, order = {}, userId, transform) => {
     try {
         const limit = parseInt(pageLimit, 10) || 15
         const page = parseInt(pageSize, 10) || 1
@@ -11,7 +11,7 @@ const paginate = async (model, pageSize, pageLimit, search = {}, filter1 = {}, f
             offset: getOffset(page, limit),
             limit,
             where: {
-                status: "active"
+                status: userId === 0 ? "active" : ["active", "inactive"]
             }   
         }
 
@@ -26,7 +26,7 @@ const paginate = async (model, pageSize, pageLimit, search = {}, filter1 = {}, f
             
         if (filter1 && filter1.length)
             options.where.createdAt = {[Op.between]: [filter1[0][0], filter1[0][1]]}
-        if (filterStatus && filterStatus.length)
+        if (filterStatus && filterStatus.length && userId !== 0)
             options.where.status = filterStatus
 
         if (Object.keys(search).length)

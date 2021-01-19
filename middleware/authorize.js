@@ -14,14 +14,20 @@ function authorize(roles = []) {
         async (req, res, next) => {
             const authHeader = req.headers['authorization']
             const token = authHeader && authHeader.split(' ')[1]
-            
-            if (!token)
+
+            if (!token && !roles.includes('guest'))
                 return res.status(401).json({ message: 'Unauthorized' });
 
             const validateToken = await db.userToken.findOne({where:{token}})
 
-            if (!validateToken || validateToken.expires < new Date(Date.now()))
-                return res.status(401).json({ message: 'Unauthorized' });
+            if (!validateToken || validateToken.expires < new Date(Date.now())) {
+                if (roles.includes('guest')) {
+                    req.user = { id: 0 }
+                    next()
+                }
+                else
+                    return res.status(401).json({ message: 'Unauthorized' });
+            }
 
             jwt.verify(token, secret, async (err, user) => {
 
