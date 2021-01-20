@@ -61,18 +61,28 @@ async function update(id, params) {
 }
 
 async function createLike(params, author, CommentId) {
-    await getComment(CommentId);
+    const comment = await getComment(CommentId);
+    if (comment.author === author)
+        throw `You cannot ${params.type} your own comment`
     //check if like/dislike already is in the table
-
     if (await db.Like.findOne({ where: { author, type: params.type, CommentId } })) {
         throw  `You cannot ${params.type} this comment again`;
     }
 
+    const previousValue = await db.Like.findOne({ where: { author, CommentId}})
+    if (previousValue) {
+        likeTypeToRemove = previousValue.type === 'like' ? 'dislike' : 'like'
+        updateUserRating(CommentId, likeTypeToRemove)
+        Object.assign(previousValue, params)
+        await previousValue.save()
+    }
+
     params.author = author;
     params.CommentId = CommentId
-    const like = await db.Like.create(params);
     updateUserRating(params.CommentId, params.type)
-    return like
+    if (!previousValue)
+        return await db.Like.create(params);
+    return previousValue
 }
 
 async function lock(CommentId) {

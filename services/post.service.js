@@ -216,18 +216,32 @@ async function getAllCategories(PostId) {
 }
 
 async function createLike(params, author, PostId) {
-    await getPost(PostId)
+    const post = await getPost(PostId)
+
+    if (post.author === author)
+        throw `You cannot ${params.type} your own posts`
     //check if like/dislike already is in the table
     if (await db.Like.findOne({ where: { author, type: params.type, PostId } })) {
         throw `You cannot ${params.type} this post again`;
     }
 
+    const previousValue = await db.Like.findOne({ where: { author, PostId}})
+    if (previousValue) {
+        likeTypeToRemove = previousValue.type === 'like' ? 'dislike' : 'like'
+        updateUserRating(PostId, likeTypeToRemove)
+        updatePostRating(PostId, likeTypeToRemove)
+        Object.assign(previousValue, params)
+        await previousValue.save()
+    }
+
     params.author = author;
     params.PostId = PostId
-    const like = await db.Like.create(params);
+    
     updateUserRating(params.PostId, params.type)
     updatePostRating(params.PostId, params.type)
-    return like
+    if (!previousValue)
+        return await db.Like.create(params);
+    return previousValue
 }
 
 async function getAllLikes(PostId) {
@@ -276,16 +290,16 @@ async function updateUserRating(postId, likeType) {
         id: postId
     }})
     const user = await db.User.findByPk(post.author)
-
     if (likeType === 'like')
         await user.increment('rating')
     else 
         if (user.rating > 0)
-            user.decrement('rating')
+            await user.decrement('rating')
     await user.save()
 }
 
 async function updatePostRating(postId, likeType) {
+
     const post = await db.Post.findOne({ where: {
         id: postId
     }})
@@ -294,7 +308,7 @@ async function updatePostRating(postId, likeType) {
         await post.increment('rating')
     else 
         if (post.rating > 0)
-            post.decrement('rating')
+            await post.decrement('rating')
     await post.save()
 }
 

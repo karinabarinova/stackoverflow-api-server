@@ -38,11 +38,11 @@ function likeComment() {
             if (!comment || comment === null)
                 return res.status(404).json({ message: 'Comment Not Found' })
             const like = await db.Like.findOne( { where: {
-                    CommentId: comment.id
+                    CommentId: comment.id, author: req.user.id
             }} );
             if (!like)
                 return res.status(400).json({ message: 'There is nothing to delete' });
-            if (Number(like.author) !== req.user.id && req.user.role != Role.Admin) {
+            if (Number(like.author) !== req.user.id) {
                 return res.status(401).json({ message: 'Unauthorized' });
             }
             next();
@@ -57,7 +57,7 @@ function likePost() {
             if (!post || post === null)
                 return res.status(404).json({ message: 'Comment Not Found' })
             const like = await db.Like.findOne( { where: {
-                    PostId: post.id
+                    PostId: post.id, author: req.user.id
             }} );
             if (!like)
                 return res.status(400).json({ message: 'There is nothing to delete' });
