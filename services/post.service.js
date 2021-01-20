@@ -219,7 +219,7 @@ async function createLike(params, author, PostId) {
     const post = await getPost(PostId)
 
     if (post.author === author)
-        throw `You cannot ${params.type} your own posts`
+        throw `You cannot ${params.type} your own post`
     //check if like/dislike already is in the table
     if (await db.Like.findOne({ where: { author, type: params.type, PostId } })) {
         throw `You cannot ${params.type} this post again`;
