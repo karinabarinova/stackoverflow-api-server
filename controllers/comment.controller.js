@@ -19,7 +19,7 @@ router.post('/:id/lock', authorize(Role.Admin), lock)
 router.post('/:id/unlock', authorize(Role.Admin), unlock)
 //
 router.post('/:id/comments', authorize(), createCommentSchema, createComment)
-
+router.get('/:id/comments', getAllComments)
 
 function getById(req, res, next) {
     commentService.getById(req.params.id)
@@ -88,6 +88,12 @@ function createCommentSchema(req, res, next) {
         content: Joi.string().empty('').required()
     })
     validateRequest(req, next, schema)
+}
+
+function getAllComments(req, res, next) {
+    commentService.getAllComments(req.params.id)
+        .then(posts => res.json(posts))
+        .catch(next);
 }
 
 function createComment(req, res, next) {

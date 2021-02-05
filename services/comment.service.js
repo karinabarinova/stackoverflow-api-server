@@ -10,6 +10,7 @@ module.exports = {
     getAllLikes,
     lock,
     unlock,
+    getAllComments,
     createComment
 };
 
@@ -103,6 +104,13 @@ async function unlock(CommentId) {
         throw "This comment is not locked"
     comment.lock_expires = null //3 days
     await comment.save()
+}
+
+async function getAllComments(CommentId) {
+    await getComment(CommentId)
+    return await db.Subcomment.findAll({ where: {
+        CommentId
+    }})   
 }
 
 async function createComment(author, content, CommentId) {
