@@ -74,6 +74,7 @@ async function createLike(params, author, CommentId) {
     if (previousValue) {
         likeTypeToRemove = previousValue.type === 'like' ? 'dislike' : 'like'
         updateUserRating(CommentId, likeTypeToRemove)
+        updateCommentRating(CommentId, likeTypeToRemove)
         Object.assign(previousValue, params)
         await previousValue.save()
     }
@@ -81,6 +82,7 @@ async function createLike(params, author, CommentId) {
     params.author = author;
     params.CommentId = CommentId
     updateUserRating(params.CommentId, params.type)
+    updateCommentRating(params.CommentId, params.type)
     if (!previousValue)
         return await db.Like.create(params);
     return previousValue
@@ -121,4 +123,17 @@ async function updateUserRating(commentId, likeType) {
         if (user.rating > 0)
             user.decrement('rating')
     await user.save()
+}
+
+async function updateCommentRating(commentId, likeType) {
+    const comment = await db.Comment.findOne({ where: {
+        id: commentId
+    }})
+
+    if (likeType === 'like')
+        await comment.increment('rating')
+    else 
+        if (comment.rating > 0)
+            await comment.decrement('rating')
+    await comment.save()
 }
