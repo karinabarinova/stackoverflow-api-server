@@ -10,7 +10,8 @@ module.exports = {
 };
 
 async function getAll() {
-    return await db.Category.findAll()
+    const categories = await db.Category.findAll()
+    return categories
 }
 
 async function getById(id) {
@@ -30,6 +31,7 @@ async function getAllPosts(id) {
             }
         }]
     })
+    // console.log(posts[0].posts)
     return posts[0].posts
 }
 

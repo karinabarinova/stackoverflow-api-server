@@ -4,6 +4,8 @@ const Role = require('../helpers/role')
 
 module.exports = {
     getAll,
+    getAllPosts,
+    getAllComments,
     getById,
     create,
     update,
@@ -15,6 +17,17 @@ module.exports = {
 async function getAll() {
     const users = await db.User.findAll();
     return users.map(x => basicDetails(x))
+}
+
+async function getAllPosts(userId) {
+    const posts = await db.Post.findAll( { where: { author: userId }});
+    return posts;
+}
+
+async function getAllComments(userId) {
+    const comments = await db.Comment.findAll( { where: { author: userId }});
+    console.log(comments)
+    return comments;
 }
 
 async function getById(id) {
@@ -53,7 +66,7 @@ async function update(id, params) {
 
     // hash password if it was entered
     if (params.password) {
-        params.passwordHash = await hash(params.password);
+        params.hash = await hash(params.password);
     }
 
     // copy params to user and save
@@ -107,6 +120,6 @@ async function hash(password) {
 }
 
 function basicDetails(user) {
-    const { id, login, email, role, created } = user;
-    return { id, login, email, role, created };
+    const { id, login, email, role, created, fullName, rating, avatar } = user;
+    return { id, login, email, role, created, fullName, rating, avatar };
 }

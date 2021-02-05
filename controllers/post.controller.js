@@ -1,8 +1,6 @@
 const express = require('express')
 const router = express.Router()
 const Joi = require('joi')
-const multer = require('multer')
-const uuid = require('uuidv1')
 const path = require('path')
 const validateRequest = require('../middleware/validate-request')
 const authorize = require('../middleware/authorize')
@@ -11,7 +9,7 @@ const postService = require('../services/post.service')
 const Role = require('../helpers/role')
 
 //routes
-router.get('/', authorize(["guest", Role.Admin, Role.User]), getAll) //public TO DO: Add pagination
+router.get('/', getAll) //public TO DO: Add pagination
 router.get('/:id', getById)
 router.get('/:id/categories', getAllCategories)
 router.post('/', authorize(), createSchema, create)
@@ -31,7 +29,7 @@ router.post('/:id/unsubscribe', authorize(), unsubscribe)
 module.exports = router
 
 function getAll(req, res, next) {
-    postService.getAll(req.query, req.user.id)
+    postService.getAll(req.query)
         .then(posts => res.json(posts))
         .catch(next);
 }

@@ -34,7 +34,8 @@ async function authenticate({ login, email, password, ipAddress }) {
     await tokenRow.save()
     return {
         ...basicDetails(user),
-        jwtToken
+        jwtToken,
+        expiresIn: 3600*24
     };
 }
 
@@ -42,7 +43,8 @@ async function register(params, origin) {
     // validate
     if (await db.User.findOne({ where: { email: params.email } })) {
         // send already registered error in email to prevent account enumeration
-        return await sendAlreadyRegisteredEmail(params.email, origin);
+        await sendAlreadyRegisteredEmail(params.email, origin);
+        throw "Email is already taken";
     }
     if (await db.User.findOne({ where: { login: params.login } }))
         throw "Username is already taken"
@@ -101,7 +103,7 @@ async function validateResetToken({ token }) {
     return user;
 }
 
-async function resetPassword({ password }, token) {
+async function resetPassword({ password, token }) {
     const user = await validateResetToken({ token });
 
     // update password and remove reset token
@@ -114,7 +116,7 @@ async function resetPassword({ password }, token) {
 //helper functions
 
 function generateJwtToken(user) {
-    // create a jwt token containing the account id that expires in 15 minutes
+    // create a jwt token containing the account id that expires in 1 hour
     return jwt.sign({ sub: user.id, id: user.id }, config.secret, { expiresIn: '1h' });
     // return jwt.sign({ sub: user.id, id: user.id }, config.secret);
 
@@ -163,15 +165,8 @@ async function sendAlreadyRegisteredEmail(email, origin) {
 }
 
 async function sendPasswordResetEmail(user, origin) {
-    let message;
-    if (origin) {
-        const resetUrl = `${origin}/api/auth/password-reset?token=${user.resetToken}`;
-        message = `<p>Please click the below link to reset your password, the link will be valid for 1 day:</p>
-                   <p><a href="${resetUrl}">${resetUrl}</a></p>`;
-    } else {
-        message = `<p>Please use the below token to reset your password with the <code>/api/auth/password-reset</code> api route:</p>
+    let message = `<p>Please use the below token to reset your password with the <code>${origin}/confirm-reset-password</code> route:</p>
                    <p><code>${user.resetToken}</code></p>`;
-    }
 
     await sendEmail({
         to: user.email,

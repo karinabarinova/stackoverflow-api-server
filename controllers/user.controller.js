@@ -33,15 +33,17 @@ const upload = multer( {
 })
 
 //routes
-router.get('/', authorize(Role.Admin), getAll);
+router.get('/', getAll);
 router.post('/', authorize(Role.Admin), createSchema, create);
-router.get('/:id', authorize(), getById);
+router.get('/:id', getById);
 router.patch('/:id', authorize(), updateSchema, update);
 router.delete('/:id', authorize(), _delete);
 router.post('/avatar', authorize(), upload.single('avatar'), uploadAvatar, (error, req, res, next) => {
     res.status(400).json({ error: error.message })
 })
 router.get('/:id/avatar', getAvatar)
+router.get('/:id/posts', authorize(), getAllPosts);
+router.get('/:id/comments', authorize(), getAllComments);
 
 module.exports = router
 
@@ -51,10 +53,22 @@ function getAll(req, res, next) {
         .catch(next);
 }
 
+function getAllPosts(req, res, next) {
+    userService.getAllPosts(req.params.id)
+        .then(posts => res.json(posts))
+        .catch(next);
+}
+
+function getAllComments(req, res, next) {
+    userService.getAllComments(req.params.id)
+        .then(comments => res.json(comments))
+        .catch(next);
+}
+
 function getById(req, res, next) {
 
-    if (Number(req.params.id) !== req.user.id && req.user.role != Role.Admin)
-        return res.status(401).json({ message: "Unauthorized" })
+    // if (Number(req.params.id) !== req.user.id && req.user.role != Role.Admin)
+    //     return res.status(401).json({ message: "Unauthorized" })
 
     userService.getById(req.params.id)
         .then(user => user ? res.json(user) : res.sendStatus(404))

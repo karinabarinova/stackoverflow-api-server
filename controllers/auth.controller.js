@@ -11,7 +11,7 @@ router.post('/login', authenticateSchema, authenticate);
 router.post('/register', registerSchema, register);
 router.post('/verify-email', verifyEmailSchema, verifyEmail);
 router.post('/password-reset', forgotPasswordSchema, forgotPassword);
-router.post('/reset-password/:confirm_token', resetPasswordSchema, resetPassword);
+router.post('/reset-password', resetPasswordSchema, resetPassword);
 router.post('/logout', authorize(), logOut);
 
 module.exports = router
@@ -85,6 +85,7 @@ function forgotPassword(req, res, next) {
 
 function resetPasswordSchema(req, res, next) {
     const schema = Joi.object({
+        token: Joi.string().required(),
         password: Joi.string().min(6).required(),
         confirmPassword: Joi.string().valid(Joi.ref('password')).required()
     });
@@ -92,7 +93,7 @@ function resetPasswordSchema(req, res, next) {
 }
 
 function resetPassword(req, res, next) {
-    authService.resetPassword(req.body, req.params.confirm_token)
+    authService.resetPassword(req.body)
         .then(() => res.json({ message: 'Password reset successful, you can now login' }))
         .catch(next);
 }

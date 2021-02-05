@@ -14,7 +14,9 @@ module.exports = {
 
 
 async function getById(id) {
-    return await getComment(id);
+    const comment = await getComment(id)
+    const author = await db.User.findOne( { where: {id: comment.author } } )
+    return {comment, author}
 }
 
 async function getAllLikes(CommentId) {
@@ -56,7 +58,6 @@ async function update(id, params) {
 
     Object.assign(comment, params);
     await comment.save();
-
     return comment.get()
 }
 

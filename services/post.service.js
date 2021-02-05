@@ -1,7 +1,8 @@
 const db = require('../helpers/db');
 const { Op } = require('sequelize');
 const paginate = require('../helpers/pagination')
-const sendEmail = require('../helpers/send-email')
+const sendEmail = require('../helpers/send-email');
+const e = require('express');
 
 module.exports = {
     getAll,
@@ -21,8 +22,8 @@ module.exports = {
     unsubscribe
 };
 
-async function getAll(query, id) {
-    const { q, page, limit} = query
+async function getAll(query) {
+    const { search, page, limit} = query
     var { order_by, order_direction, fromDate, toDate, status, category } = query
     if (order_by !== "id" && order_by !== "createdAt" 
     && order_by !== 'updatedAt' && order_by !== 'rating')
@@ -31,17 +32,17 @@ async function getAll(query, id) {
     if (order_direction !== "desc" && order_direction !== "asc")
         order_direction = "desc"
 
-    let search = {}
+    let searchData = {}
     let filter1 = []
     let filter2 = []
     let filterStatus = []
     let order = []
 
-    if (q) {
-        search = {
+    if (search) {
+        searchData = {
             where: {
-                name: {
-                    [Op.like]: `%${q}%`
+                content: {
+                    [Op.like]: `%${search}%`
                 }
             }
         }
@@ -58,17 +59,22 @@ async function getAll(query, id) {
     if (status && (status === "active" || status === "inactive"))
         filterStatus.push([status])
 
-    const transform = (posts) => {
-        return posts.map(post => {
+    const transform = async (posts) => {
+        return await Promise.all(posts.map( async post => {
+            const user = await db.User.findOne( { where: {id: post.author}})
             return {
                 title: post.title,
                 content: post.content,
-                rating: post.rating
+                rating: post.rating,
+                id: post.id,
+                author: user.fullName,
+                authorId: post.author,
+                publish_date: post.publish_date
             }
-        })
+        }))
     }
 
-    const posts = await paginate(db.Post, page, limit, search, filter1, filter2, filterStatus, order, id, transform)
+    const posts = await paginate(db.Post, page, limit, searchData, filter1, filter2, filterStatus, order, transform)
     return { data: posts} 
 }
 
@@ -168,6 +174,12 @@ async function subscribe(subscriber, PostId) {
     const post = await getPost(PostId)
     const user = await db.User.findOne( {where: {id: subscriber}})
     if (user) {
+        if (post.author === subscriber) {
+            const error = new Error('You cannot subscribe to your own posts')
+            error.name = "BadRequestSubscriber"
+            throw error
+        }
+            // throw 'You cannot subscribe to your own posts'
         if (post.status === 'active') {
             const exists = await db.Subcribers.findOne( {where: { userId: subscriber, PostId}})
             if (exists)
@@ -183,14 +195,18 @@ async function subscribe(subscriber, PostId) {
     }
 }
 
+// BadRequestUnsubscriber
+
 async function unsubscribe(subscriber, PostId) {
     await getPost(PostId)
     const record = await db.Subcribers.findOne({ where: {userId: subscriber, PostId}})    
     if (record)
         await record.destroy();
-    else
-        throw 'You are not subscribed to this post'
-
+    else {
+        const error = new Error('You are not subscribed to this post')
+        error.name = "BadRequestUnsubscriber"
+        throw error
+    }
 }
 
 

@@ -9,16 +9,16 @@ const Role = require('../helpers/role')
 
 module.exports = router
 //routers
-router.get('/', authorize(Role.Admin), getAll)
-router.get('/:id', authorize(Role.Admin), getById)
-router.get('/:id/posts', authorize(Role.Admin), getAllPosts)
+router.get('/', getAll)
+router.get('/:id', getById)
+router.get('/:id/posts', getAllPosts)
 router.post('/', authorize(Role.Admin), createSchema, create)
 router.patch('/:id', authorize(Role.Admin), updateSchema, update)
 router.delete('/:id', authorize(Role.Admin), _delete)
 
 function getAll(req, res, next) {
     categoryService.getAll()
-        .then(categories => res.json(categories))
+        .then(data => res.json(data))
         .catch(next);
 }
 

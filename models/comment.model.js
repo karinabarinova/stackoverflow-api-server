@@ -30,6 +30,11 @@ function model(sequelize) {
                 key: "Id"
             }
         },
+        rating: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 0
+        },
         lock_expires: { type: DataTypes.DATE }
     }
 

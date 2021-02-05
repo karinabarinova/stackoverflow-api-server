@@ -2,7 +2,7 @@ const { Op, Sequelize } = require('sequelize')
 const db = require('../helpers/db');
 
 
-const paginate = async (model, pageSize, pageLimit, search = {}, filter1 = {}, filter2 = {}, filterStatus = {}, order = {}, userId, transform) => {
+const paginate = async (model, pageSize, pageLimit, search = {}, filter1 = {}, filter2 = {}, filterStatus = {}, order = {}, transform) => {
     try {
         const limit = parseInt(pageLimit, 10) || 15
         const page = parseInt(pageSize, 10) || 1
@@ -11,7 +11,7 @@ const paginate = async (model, pageSize, pageLimit, search = {}, filter1 = {}, f
             offset: getOffset(page, limit),
             limit,
             where: {
-                status: userId === 0 ? "active" : ["active", "inactive"]
+                status: ["active", "inactive"]
             }   
         }
 
@@ -26,7 +26,7 @@ const paginate = async (model, pageSize, pageLimit, search = {}, filter1 = {}, f
             
         if (filter1 && filter1.length)
             options.where.createdAt = {[Op.between]: [filter1[0][0], filter1[0][1]]}
-        if (filterStatus && filterStatus.length && userId !== 0)
+        if (filterStatus && filterStatus.length)
             options.where.status = filterStatus
 
         if (Object.keys(search).length)
@@ -38,7 +38,7 @@ const paginate = async (model, pageSize, pageLimit, search = {}, filter1 = {}, f
         let {count, rows} = await model.findAndCountAll(options)
 
         if (transform && typeof transform === 'function')
-            rows = transform(rows)
+            rows = await transform(rows)
 
         return {
             previousPage: getPreviousPage(page),

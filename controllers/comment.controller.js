@@ -20,7 +20,7 @@ router.post('/:id/unlock', authorize(Role.Admin), unlock)
 
 function getById(req, res, next) {
     commentService.getById(req.params.id)
-        .then(post => res.json(post))
+        .then(({comment, author}) => res.json({comment, author}))
         .catch(next)
 }
 
