@@ -108,7 +108,7 @@ async function unlock(CommentId) {
 
 async function getAllComments(CommentId) {
     await getComment(CommentId)
-    return await db.Subcomment.findAll({ where: {
+    return await db.Subcomments.findAll({ where: {
         CommentId
     }})   
 }
@@ -116,7 +116,7 @@ async function getAllComments(CommentId) {
 async function createComment(author, content, CommentId) {
     const comment = await getComment(CommentId)
     if (comment.status === 'active') {
-        const subcomment = await db.Subcomment.create({
+        const subcomment = await db.Subcomments.create({
             author,
             CommentId,
             content
