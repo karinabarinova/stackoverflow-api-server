@@ -17,6 +17,9 @@ router.get('/:id/like', authorize(), getAllLikes)
 router.delete('/:id/like', authorize(), isOwner.likeComment(), deleteLike)
 router.post('/:id/lock', authorize(Role.Admin), lock)
 router.post('/:id/unlock', authorize(Role.Admin), unlock)
+//
+router.post('/:id/comments', authorize(), createCommentSchema, createComment)
+
 
 function getById(req, res, next) {
     commentService.getById(req.params.id)
@@ -77,5 +80,18 @@ function createLikeSchema(req, res, next) {
 function createLike(req, res, next) {
     commentService.createLike(req.body, req.user.id, req.params.id)
         .then((like) => res.json({ message: "Like Creation successful", like}))
+        .catch(next)
+}
+
+function createCommentSchema(req, res, next) {
+    const schema = Joi.object({
+        content: Joi.string().empty('').required()
+    })
+    validateRequest(req, next, schema)
+}
+
+function createComment(req, res, next) {
+    commentService.createComment(req.user.id, req.body.content, req.params.id)
+        .then((comment) => res.json(comment))
         .catch(next)
 }

@@ -9,7 +9,8 @@ module.exports = {
     createLike,
     getAllLikes,
     lock,
-    unlock
+    unlock,
+    createComment
 };
 
 
@@ -102,6 +103,20 @@ async function unlock(CommentId) {
         throw "This comment is not locked"
     comment.lock_expires = null //3 days
     await comment.save()
+}
+
+async function createComment(author, content, CommentId) {
+    const comment = await getComment(CommentId)
+    if (comment.status === 'active') {
+        const subcomment = await db.Subcomment.create({
+            author,
+            CommentId,
+            content
+        })
+        return subcomment
+    } else {
+        throw 'You cannot add comments under inactive comments'
+    }
 }
 
 //helper function
