@@ -141,7 +141,7 @@ async function uploadAvatar(req, res, next) {
     // await sharp(req.file.path).resize({ width: 250, height: 250 }).png().toString();
 
     userService.uploadAvatar(req.user.id, req.file, req.protocol, req.hostname)
-        .then(() => res.json({ message: "Avatar uploaded"}))
+        .then((user) => res.json(user))
         .catch(next)
 }
 

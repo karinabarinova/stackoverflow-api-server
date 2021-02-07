@@ -152,6 +152,8 @@ async function createComment(author, content, PostId) {
             for (user of subscribers)
                 sendUpdateEmail(user.dataValues, PostId)
         }
+        post.changed('updatedAt', true)
+        await post.save()
         return comment
     } else {
         throw 'You cannot add comments under inactive posts'

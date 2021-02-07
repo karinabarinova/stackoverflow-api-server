@@ -88,7 +88,7 @@ async function uploadAvatar(id, file, protocol, host) {
     const user = await getUser(id)
     user.avatar = file.path
     await user.save()
-    
+    return user
 }
 
 async function getAvatar(userId) {

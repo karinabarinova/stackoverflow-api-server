@@ -45,6 +45,7 @@ const paginate = async (model, pageSize, pageLimit, search = {}, filter1 = {}, f
             currentPage: page,
             nextPage: getNextPage(page, limit, count),
             total: count,
+            pages: getTotalPages(count, limit),
             limit,
             filter1,
             filter2,
@@ -55,11 +56,19 @@ const paginate = async (model, pageSize, pageLimit, search = {}, filter1 = {}, f
     }
 }
 
+const getTotalPages = (count, limit) => {
+    let pages = Math.trunc(count / limit)
+    if (count % limit > 0)
+        pages++
+    return pages
+}
+
 const getOffset = (page, limit) => {
     return (page * limit) - limit
 }
 
 const getNextPage = (page, limit, total) => {
+
     if ((total / limit) > page)
         return page + 1;
     return null
