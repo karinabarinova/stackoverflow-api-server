@@ -26,7 +26,6 @@ async function getAllPosts(userId) {
 
 async function getAllComments(userId) {
     const comments = await db.Comment.findAll( { where: { author: userId }});
-    console.log(comments)
     return comments;
 }
 
